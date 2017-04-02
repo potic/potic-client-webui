@@ -1,5 +1,7 @@
 FROM node:7.8-onbuild
 
-ENV NPM_CONFIG_LOGLEVEL warn
+ENV NODE_ENV --quiet
 
 EXPOSE 8000
+
+CMD [ "npm", "run", "serve:dist" ]
