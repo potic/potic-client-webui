@@ -1,0 +1,15 @@
+= pocket-square-present-react
+
+pocket-square web interface.
+
+== Travis job
+
+image:https://travis-ci.org/pocket-square/pocket-square-present-react.svg?branch=develop["Travis job", link="https://travis-ci.org/pocket-square/pocket-square-present-react"]
+
+== Docker repository
+
+https://hub.docker.com/r/pocketsquare/pocket-square-present-react/
+
+== Documentation
+
+link:src/scripts/deploy[HOWTO: start service as docker container]
