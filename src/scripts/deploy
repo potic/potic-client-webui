@@ -21,7 +21,7 @@ warn "Pulling latest docker image..."
 docker pull pocketsquare/pocket-square-present-react:latest
 
 warn "Starting docker image..."
-docker run -dit --name pocket-square-present-react --link pocket-square-sort-shuffle -p 80:8000 pocketsquare/pocket-square-present-react:latest
+docker run -dit --name pocket-square-present-react --link pocket-square-sort-shuffle -p 80:80 pocketsquare/pocket-square-present-react:latest
 
 warn "Currently running docker images"
 docker ps -a
