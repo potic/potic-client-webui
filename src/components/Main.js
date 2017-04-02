@@ -81,7 +81,7 @@ class PocketSquareGrid extends React.Component {
 
   componentDidMount() {
     console.log('START FETCH');
-    axios.get('http://188.166.174.189:28104/sort/58b1800dc9e77c0001d1d702?count=12')
+    axios.get('http://188.166.174.189:28103/article/byUserId/58b1800dc9e77c0001d1d702/unread?page=0&size=12')
       .then(res => {
         const posts = res.data;
         console.log(res);
@@ -160,4 +160,3 @@ AppComponent.defaultProps = {
 };
 
 export default AppComponent;
-
