@@ -1,0 +1,27 @@
+#!/usr/bin/env sh
+
+##############################################################################
+##
+##  Stop and kill currently running docker image, pull newest version and
+##  run it.
+##
+##############################################################################
+
+warn ( ) {
+    echo "$*"
+}
+
+warn "Currently running docker images"
+docker ps -a
+
+warn "Killing currently running docker image..."
+docker kill pocket-square-present-react; docker rm pocket-square-present-react
+
+warn "Pulling latest docker image..."
+docker pull pocketsquare/pocket-square-present-react:latest
+
+warn "Starting docker image..."
+docker run -dit --name pocket-square-present-react --link pocket-square-sort-shuffle -p 80:8000 pocketsquare/pocket-square-present-react:latest
+
+warn "Currently running docker images"
+docker ps -a
