@@ -1,3 +1,5 @@
 FROM node:7.8-onbuild
 
+ENV NPM_CONFIG_LOGLEVEL warn
+
 EXPOSE 8000
