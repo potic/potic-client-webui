@@ -33,7 +33,10 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     overflowY: 'hidden',
-  }
+  },
+  title: {
+    lineHeight: 1,
+  },
 };
 
 const initPosts = [
@@ -89,18 +92,47 @@ class PocketSquareGrid extends React.Component {
     super(props);
 
     this.state = {
-      posts: initPosts
+      posts: initPosts,
+      nextPage: 0,
+      size: 12,
     };
+
+    this.handleScroll = this.handleScroll.bind(this);
   }
 
-  componentDidMount() {
-    console.log('START FETCH');
-    axios.get('http://188.166.174.189:28103/article/byUserId/58b1800dc9e77c0001d1d702/unread?page=0&size=12')
+  fetchData() {
+    console.log('START FETCH FOR PAGE '+ this.state.nextPage);
+    axios.get('http://188.166.174.189:28103/article/byUserId/58b1800dc9e77c0001d1d702/unread?page=' + this.state.nextPage + '&size=' + this.state.size)
       .then(res => {
         const posts = res.data;
         console.log(res);
-        this.setState({ posts });
+        if (this.state.nextPage == 0) {
+          this.setState({ posts: posts, size: this.state.size, nextPage: 1 });
+        } else {
+          this.setState({ posts: this.state.posts.concat(posts), size: this.state.size, nextPage: this.state.nextPage + 1 });
+        }
       });
+  }
+
+  componentDidMount() {
+    this.fetchData();
+    window.addEventListener("scroll", this.handleScroll);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("scroll", this.handleScroll);
+  }
+
+  handleScroll() {
+    const windowHeight = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight;
+    const body = document.body;
+    const html = document.documentElement;
+    const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
+    const windowBottom = windowHeight + window.pageYOffset;
+    if (windowBottom >= docHeight) {
+      this.fetchData();
+      console.log('bottom reached');
+    }
   }
 
   render() {
@@ -134,7 +166,7 @@ class PocketSquareCard extends React.Component {
           <CardMedia style={styles.media}>
             <img src={this.props.post.mainImage ? this.props.post.mainImage.src  : null} />
           </CardMedia>
-          <CardTitle title={this.props.post.title} subtitle={this.props.post.source} />
+          <CardTitle title={this.props.post.title} subtitle={this.props.post.source} titleStyle={styles.title} />
           <CardText>
             {this.props.post.excerpt}
           </CardText>
