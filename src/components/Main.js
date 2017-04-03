@@ -19,6 +19,20 @@ const styles = {
     display: 'flex',
     flexWrap: 'nowrap',
     overflowX: 'auto',
+    padding: 10,
+  },
+  cardInner: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: 480,
+    justifyContent: 'flex-end',
+    overflowY: 'hidden',
+  },
+  media: {
+    flex: 1,
+    display: 'flex',
+    alignItems: 'center',
+    overflowY: 'hidden',
   }
 };
 
@@ -96,7 +110,7 @@ class PocketSquareGrid extends React.Component {
       <div>
         {Array(rows).fill().map((_, i) => (
          <div style={styles.root}>
-            <GridList style={styles.gridList} cellHeight='auto'>
+            <GridList style={styles.gridList} cellHeight='auto' padding={10} >
               {this.state.posts.slice(i*cols, (i+1)*cols).map((post) => (
                 <PocketSquareCard post={post} key={post.id} />
               ))}
@@ -108,24 +122,6 @@ class PocketSquareGrid extends React.Component {
   }
 }
 
-class GridListExampleSingleLine extends React.Component {
-  constructor(props) {
-      super(props);
-  }
-
-  render() {
-    return (
-      <div style={styles.root}>
-        <GridList style={styles.gridList} cellHeight='auto'>
-          {this.props.posts.map((post) => (
-            <PocketSquareCard post={post} />
-          ))}
-        </GridList>
-      </div>
-    );
-  }
-};
-
 class PocketSquareCard extends React.Component {
   constructor(props) {
       super(props);
@@ -134,17 +130,19 @@ class PocketSquareCard extends React.Component {
   render() {
     return (
       <Card>
-        <CardMedia>
-          <img src={this.props.post.mainImage ? this.props.post.mainImage.src  : null} />
-        </CardMedia>
-        <CardTitle title={this.props.post.title} subtitle={this.props.post.source} />
-        <CardText>
-          {this.props.post.excerpt}
-        </CardText>
-        <CardActions>
-          <FlatButton label="@pocket" />
-          <FlatButton label="mark as read" />
-        </CardActions>
+        <div style={styles.cardInner}>
+          <CardMedia style={styles.media}>
+            <img src={this.props.post.mainImage ? this.props.post.mainImage.src  : null} />
+          </CardMedia>
+          <CardTitle title={this.props.post.title} subtitle={this.props.post.source} />
+          <CardText>
+            {this.props.post.excerpt}
+          </CardText>
+          <CardActions>
+            <FlatButton label="@pocket" />
+            <FlatButton label="mark as read" />
+          </CardActions>
+        </div>
       </Card>
     );
   }
