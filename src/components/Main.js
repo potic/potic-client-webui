@@ -37,6 +37,9 @@ const styles = {
   title: {
     lineHeight: 1,
   },
+  link: {
+    textDecoration:'none',
+  },
 };
 
 const initPosts = [
@@ -166,7 +169,9 @@ class PocketSquareCard extends React.Component {
           <CardMedia style={styles.media}>
             <img src={this.props.post.mainImage ? this.props.post.mainImage.src  : null} />
           </CardMedia>
-          <CardTitle title={this.props.post.title} subtitle={this.props.post.source} titleStyle={styles.title} />
+          <a href={this.props.post.resolvedUrl} style={styles.link} target="_blank">
+            <CardTitle title={this.props.post.title} subtitle={this.props.post.source} titleStyle={styles.title} />
+          </a>
           <CardText>
             {this.props.post.excerpt}
           </CardText>
