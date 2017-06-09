@@ -135,7 +135,9 @@ class PocketSquareGrid extends React.Component {
     window.removeEventListener("scroll", this.handleScroll);
   }
 
+
   handleScroll() {
+    /*
     const windowHeight = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight;
     const body = document.body;
     const html = document.documentElement;
@@ -145,6 +147,7 @@ class PocketSquareGrid extends React.Component {
       this.fetchData();
       console.log('bottom reached');
     }
+    */
   }
 
   render() {
