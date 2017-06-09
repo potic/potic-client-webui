@@ -6,6 +6,7 @@ import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'mat
 import FlatButton from 'material-ui/FlatButton';
 import axios from 'axios';
 import {GridList, GridTile} from 'material-ui/GridList';
+import Subheader from 'material-ui/Subheader';
 import IconButton from 'material-ui/IconButton';
 import StarBorder from 'material-ui/svg-icons/toggle/star-border';
 
@@ -40,10 +41,14 @@ const styles = {
   link: {
     textDecoration:'none',
   },
+  subheader: {
+    fontSize: '45px',
+  },
 };
 
 const initPosts = [
   {
+    name: 'Getting started',
     articles: [{
       img: 'images/grid-list/00-52-29-429_640.jpg',
       title: 'Breakfast',
@@ -147,6 +152,7 @@ class PocketSquareGrid extends React.Component {
       <div>
         {Array(this.state.posts.length).fill().map((_, i) => (
          <div style={styles.root}>
+            <Subheader style={styles.subheader}>{this.state.posts[i]['name']}</Subheader>
             <GridList style={styles.gridList} cellHeight='auto' padding={10} >
               {this.state.posts[i]['articles'].map((post) => (
                 <PocketSquareCard post={post} key={post.id} />
