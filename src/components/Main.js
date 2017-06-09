@@ -44,48 +44,50 @@ const styles = {
 
 const initPosts = [
   {
-    img: 'images/grid-list/00-52-29-429_640.jpg',
-    title: 'Breakfast',
-    author: 'jill111',
-    mainImage: {
-      src: "../images/yeoman.png"
+    articles: [{
+      img: 'images/grid-list/00-52-29-429_640.jpg',
+      title: 'Breakfast',
+      author: 'jill111',
+      mainImage: {
+        src: "../images/yeoman.png"
+      },
+      id: "1",
+      source: "aaa",
+      excerpt: "aaa"
     },
-    id: "1",
-    source: "aaa",
-    excerpt: "aaa"
-  },
-  {
-    img: 'images/grid-list/burger-827309_640.jpg',
-    title: 'Tasty burger',
-    author: 'pashminu',
-    mainImage: {
-      src: "../images/yeoman.png"
+    {
+      img: 'images/grid-list/burger-827309_640.jpg',
+      title: 'Tasty burger',
+      author: 'pashminu',
+      mainImage: {
+        src: "../images/yeoman.png"
+      },
+      id: "2",
+      source: "aaa",
+      excerpt: "aaa"
     },
-    id: "2",
-    source: "aaa",
-    excerpt: "aaa"
-  },
-  {
-    img: 'images/grid-list/camera-813814_640.jpg',
-    title: 'Camera',
-    author: 'Danson67',
-    mainImage: {
-      src: "../images/yeoman.png"
+    {
+      img: 'images/grid-list/camera-813814_640.jpg',
+      title: 'Camera',
+      author: 'Danson67',
+      mainImage: {
+        src: "../images/yeoman.png"
+      },
+      id: "3",
+      source: "aaa",
+      excerpt: "aaa"
     },
-    id: "3",
-    source: "aaa",
-    excerpt: "aaa"
-  },
-  {
-    img: 'images/grid-list/morning-819362_640.jpg',
-    title: 'Morning',
-    author: 'fancycrave1',
-    mainImage: {
-      src: "../images/yeoman.png"
-    },
-    id: "4",
-    source: "aaa",
-    excerpt: "aaa"
+    {
+      img: 'images/grid-list/morning-819362_640.jpg',
+      title: 'Morning',
+      author: 'fancycrave1',
+      mainImage: {
+        src: "../images/yeoman.png"
+      },
+      id: "4",
+      source: "aaa",
+      excerpt: "aaa"
+    }]
   }
   ];
 
@@ -105,7 +107,9 @@ class PocketSquareGrid extends React.Component {
 
   fetchData() {
     console.log('START FETCH FOR PAGE '+ this.state.nextPage);
-    axios.get('http://188.166.174.189:28103/article/byUserId/58b1800dc9e77c0001d1d702/unread?page=' + this.state.nextPage + '&size=' + this.state.size)
+    //var url = 'http://188.166.174.189:28103/article/byUserId/58b1800dc9e77c0001d1d702/unread?page=' + this.state.nextPage + '&size=' + this.state.size;
+    const url = 'http://188.166.174.189:40401/sandbox/section';
+    axios.get(url)
       .then(res => {
         const posts = res.data;
         console.log(res);
@@ -139,14 +143,12 @@ class PocketSquareGrid extends React.Component {
   }
 
   render() {
-    const cols = 4;
-    const rows = Math.floor(this.state.posts.length / cols);
     return (
       <div>
-        {Array(rows).fill().map((_, i) => (
+        {Array(this.state.posts.length).fill().map((_, i) => (
          <div style={styles.root}>
             <GridList style={styles.gridList} cellHeight='auto' padding={10} >
-              {this.state.posts.slice(i*cols, (i+1)*cols).map((post) => (
+              {this.state.posts[i]['articles'].map((post) => (
                 <PocketSquareCard post={post} key={post.id} />
               ))}
             </GridList>
