@@ -48,7 +48,8 @@ const styles = {
 
 const initPosts = [
   {
-    name: 'Getting started',
+    title: 'Getting started',
+    firstChunk: {
     articles: [{
       img: 'images/grid-list/00-52-29-429_640.jpg',
       title: 'Breakfast',
@@ -93,6 +94,7 @@ const initPosts = [
       source: "aaa",
       excerpt: "aaa"
     }]
+    }
   }
   ];
 
@@ -108,11 +110,12 @@ class PocketSquareGrid extends React.Component {
     };
 
     this.handleScroll = this.handleScroll.bind(this);
+    this.fetchCardData = this.fetchCardData.bind(this);
   }
 
   fetchData() {
     console.log('START FETCH FOR PAGE '+ this.state.nextPage);
-    //var url = 'http://188.166.174.189:28103/article/byUserId/58b1800dc9e77c0001d1d702/unread?page=' + this.state.nextPage + '&size=' + this.state.size;
+//    const url = 'http://188.166.174.189:28103/article/byUserId/58b1800dc9e77c0001d1d702/unread?page=' + this.state.nextPage + '&size=' + this.state.size;
     const url = 'http://188.166.174.189:40401/sandbox/section';
     axios.get(url)
       .then(res => {
@@ -123,6 +126,24 @@ class PocketSquareGrid extends React.Component {
         } else {
           this.setState({ posts: this.state.posts.concat(posts), size: this.state.size, nextPage: this.state.nextPage + 1 });
         }
+      });
+  }
+
+  fetchCardData(ind) {
+    console.log('fetch card data');
+    console.log(ind);
+
+
+    const url = 'http://188.166.174.189:40401/sandbox/section/' + this.state.posts[ind]['id'] + '/' + this.state.posts[ind]['firstChunk']['nextChunkId'];
+    axios.get(url)
+      .then(res => {
+        const posts = res.data;
+        console.log(res);
+
+        this.state.posts[ind]['firstChunk']['articles'].push.apply(this.state.posts[ind]['firstChunk']['articles'], posts['articles']);
+        this.state.posts[ind]['firstChunk']['nextChunkId'] = posts['nextChunkId'];
+
+        this.setState({ posts: this.state.posts, size: this.state.size, nextPage: this.state.nextPage + 1 });
       });
   }
 
@@ -155,12 +176,13 @@ class PocketSquareGrid extends React.Component {
       <div>
         {Array(this.state.posts.length).fill().map((_, i) => (
          <div style={styles.root}>
-            <Subheader style={styles.subheader}>{this.state.posts[i]['name']}</Subheader>
+            <Subheader style={styles.subheader}>{this.state.posts[i]['title']}</Subheader>
             <GridList style={styles.gridList} cellHeight='auto' padding={10} >
-              {this.state.posts[i]['articles'].map((post) => (
+              {this.state.posts[i]['firstChunk']['articles'].map((post) => (
                 <PocketSquareCard post={post} key={post.id} />
               ))}
             </GridList>
+            <FlatButton label="Expand" fullWidth={true} onClick={() => {this.fetchCardData(i)}}/>
           </div>
          ))}
       </div>
