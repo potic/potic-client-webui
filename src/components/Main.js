@@ -11,15 +11,7 @@ import IconButton from 'material-ui/IconButton';
 import StarBorder from 'material-ui/svg-icons/toggle/star-border';
 
 const styles = {
-  root: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-  },
   gridList: {
-    display: 'flex',
-    flexWrap: 'nowrap',
-    overflowX: 'auto',
     padding: 10,
   },
   cardInner: {
@@ -175,9 +167,9 @@ class PocketSquareGrid extends React.Component {
     return (
       <div>
         {Array(this.state.posts.length).fill().map((_, i) => (
-         <div style={styles.root}>
+         <div>
             <Subheader style={styles.subheader}>{this.state.posts[i]['title']}</Subheader>
-            <GridList style={styles.gridList} cellHeight='auto' padding={10} >
+            <GridList style={styles.gridList} cellHeight='auto' padding={10} cols={5}>
               {this.state.posts[i]['firstChunk']['articles'].map((post) => (
                 <PocketSquareCard post={post} key={post.id} />
               ))}
@@ -197,7 +189,7 @@ class PocketSquareCard extends React.Component {
 
   render() {
     return (
-      <Card>
+      <Card style=>
         <div style={styles.cardInner}>
           <CardMedia style={styles.media}>
             <img src={this.props.post.mainImage ? this.props.post.mainImage.src  : null} />
