@@ -1,14 +1,14 @@
-= pocket-square-present-react
+= potic-client-webui
 
-pocket-square web interface.
+potic client web interface.
 
 == Travis job
 
-image:https://travis-ci.org/pocket-square/pocket-square-present-react.svg?branch=develop["Travis job", link="https://travis-ci.org/pocket-square/pocket-square-present-react"]
+image:https://travis-ci.org/potic/potic-client-webui.svg?branch=develop["Travis job", link="https://travis-ci.org/potic/potic-client-webui"]
 
 == Docker repository
 
-https://hub.docker.com/r/pocketsquare/pocket-square-present-react/
+https://hub.docker.com/r/potic/potic-client-webui/
 
 == Documentation
 
