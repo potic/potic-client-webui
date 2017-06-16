@@ -1,26 +1,26 @@
 sudo: required
-
 language: node_js
 node_js:
-  - "7.8"
-
+- '7.8'
 services:
 - docker
-
 install:
 - npm install
 - npm run dist
-
 before_script:
 - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
 - eval "$(ssh-agent -s)"
 - chmod 600 .travis/id_rsa
 - ssh-add .travis/id_rsa
-
 script:
 - export DOCKER_REPO=potic/potic-client-webui
-- export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH | tr '/' '-' ; fi`
+- export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH
+  | tr '/' '-' ; fi`
 - docker build -t $DOCKER_REPO:travis-$TRAVIS_BUILD_NUMBER .
 - docker tag $DOCKER_REPO:travis-$TRAVIS_BUILD_NUMBER $DOCKER_REPO:$TAG
 - docker push $DOCKER_REPO
-- if [ "$TRAVIS_BRANCH" == "master" ]; then ssh -o "StrictHostKeyChecking no" "$DEPLOY_USER"@"$DEPLOY_HOST" 'bash -s' < scripts/deploy; fi
+- if [ "$TRAVIS_BRANCH" == "master" ]; then ssh -o "StrictHostKeyChecking no" "$DEPLOY_USER"@"$DEPLOY_HOST"
+  'bash -s' < scripts/deploy; fi
+before_install:
+- openssl aes-256-cbc -K $encrypted_f0ebdbae76d9_key -iv $encrypted_f0ebdbae76d9_iv
+  -in id_rsa.enc -out .travis/id_rsa -d
