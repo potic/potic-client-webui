@@ -1,26 +1,36 @@
 sudo: required
+
 language: node_js
+
 node_js:
 - '7.8'
+
 services:
 - docker
+
+before_install:
+- openssl aes-256-cbc -K $encrypted_f0ebdbae76d9_key -iv $encrypted_f0ebdbae76d9_iv -in id_rsa.enc -out .travis/id_rsa -d
+
 install:
 - npm install
 - npm run dist
+
 before_script:
 - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
 - eval "$(ssh-agent -s)"
 - chmod 600 .travis/id_rsa
 - ssh-add .travis/id_rsa
+
 script:
 - export DOCKER_REPO=potic/potic-client-webui
-- export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH
-  | tr '/' '-' ; fi`
+- export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH | tr '/' '-' ; fi`
 - docker build -t $DOCKER_REPO:travis-$TRAVIS_BUILD_NUMBER .
 - docker tag $DOCKER_REPO:travis-$TRAVIS_BUILD_NUMBER $DOCKER_REPO:$TAG
 - docker push $DOCKER_REPO
-- if [ "$TRAVIS_BRANCH" == "master" ]; then ssh -o "StrictHostKeyChecking no" "$DEPLOY_USER"@"$DEPLOY_HOST"
-  'bash -s' < scripts/deploy; fi
-before_install:
-- openssl aes-256-cbc -K $encrypted_f0ebdbae76d9_key -iv $encrypted_f0ebdbae76d9_iv
-  -in id_rsa.enc -out .travis/id_rsa -d
+- if [ "$TRAVIS_BRANCH" == "master" ]; then ssh -o "StrictHostKeyChecking no" "$DEPLOY_USER"@"$DEPLOY_HOST" 'bash -s' < scripts/deploy; fi
+
+env:
+  global:
+  - secure: b2SbHHn95A6ORansmSjXKoQoBcXR+Si5OwjeJC1k0JlyogsWMi6+R+UY3r6N72e6pRhZ+Zk4MkqFCwk/Q6EW7esuUMSF+E4b0gFoP1G5QCTsSLf0x5BFOLFmwoXHDlN9E33iwa2n7F20jJB0McHDi+Es+TTSiSVTygWqXFCh6bmJRbWNYHzJnyukIN7stakFY7HK/md8eRfOml4VeF36driCE8DuxRgYKI0Cfzh4gnsQDxXMe9LGZwkSIds2mtt4Dv7rm5DVXZn/uVc7rR2cTMCKYUvE5Ekvs4KNaPCuIpE0Zl/iow4WASz8Js/vHpQj8uiMg0etCBPuWnuqu3yj5FAEyyBvMRTVA1NMhFXEKUwELzzECW8VjSto9uijsfJ5jvFbsASxINpxJHzDWUiEa/LrOtnsoDfJBmmWwqfcTREilLP3wUJnVVlxfYIuVb/AwVF/yCRw7HWNmUERdn1rPkDPP7oXd6MC97vvKoYbkLO+Hg5cXecboBS66KzTY/v6VUMyeE7uS5OGgn+7qO8K8imj0KyoJRW6psyta1x45NC0mkDMhajMdSkeX/LrnF2oy6kREHSvT76bQfQ7uD8JCrtQM5Q8LvIMx2ATIdbvcj0ylbHMqXH7Sgv/09kpnuUka7P3MdXZgJf2FmL+AJnOUkA6F6sjIuqQxP3zb5f2TBY=
+  - secure: F9sSu4ONQ3RSyfISzZFdBLX5Hqni1cJFDgIbyliMIwrVnSzmnYugIz53vNH19e7F50ruBW6CXcSsAfp5+RpzY+MzAxc+oUFP64POJsr8S8dUa91xPPIe74PpSRdx3XkKK6mYCljTjrzt5IN2RMyhq25LD5W5qVlkILeDi3RNNjwjN0uNN9dOra8ymWDfX7keLga/emHcg/z24WoLnNY4uUYp/oBjpswFn5dGEj7w/Fm3BJkWtH4aJZ2ArzIAifI7mphux1oAFCQyGzeuJJUclU7eSrXcPSwxQPTjYZucNS3bhGvNkckvDWwFKr9KKCd+qEororhVmaz6NyemxW0wyyzIQSX85jVKAOe9LzhMILcguLai4XquT6Des+BbfkIkKPzdj3v2XaAOcznWgOWSOIWraQEIaocvYHAogxgtTsTap8UZjDu1Nh7BgHcQdqGHcgxwLN4XNLc6rLY7PoSEN5AX50d9kxP1TO2zUhEntpP37Hwq84tL5x811RxLcBfGZMi1W0a0Fdhb+FXdlP+Frn/HIk2guscLxobNxNQHxI4KZtUWVFEfw3NJLF1Cf7XlJN0z4Aq/eR3EF5vbDUIG5v500GSEFwaypipQLqDY0TSSIa2gVEq6C8h2AbmdWzXU9zSguGasRkrYppv2iZkYJHKqJWPookHy+afkc55GuDk=
+  - secure: RKtKl/xALD4nMhFcrtOKphvRppKv1s35l2xeDGSJRtzqKT9uManRVLvyxt4S7CMngGRWT5OR1n52WAN2eYX7ReRysj11h9B5C6WGWTTrueI4LGRcuEyEH1d+5oOT9tLbSxC3orq15JwarahuDXh5hutq+NPgSRcsbEuZZ1VWM87yNZtD3vnHBxiO9f2P2SlAWLqd2ka3ZyeNfwtuAZJcGvzEEfb6buORjfrnb7zKD4a+T2Z2QAl3JGZLbN4T/ALPeJPcharg8ugbSMu996Iwp3ox1lqnzX7RlFSodKsoPkWag8WstuNJb0KzG2yYjYsR/yliddDK2nwc9bwExSc0AJihGjsKHoTk+JOLMQPuAbtgFKrk6gUavJ7y9g8PubhXJBMTboVOA3B9oEkcDUwEe1tktPydW2e/QMZ2/NnJchVgmVtpyTKP87KOOcnNgaJUJxtQpZO8XY7XYYJSpespdIcwOtwJCUcVlIH5OqU2y331qqbD2OwUV704oeJfOceuCSdL3FNL+mz9GwhOe8vSQ7zD734kYTOgjj+qpfiuNnC/a1bmNCh9knee5ks2foRYu2elmG9oj2wGtjaoNkMj2ni7ROCe8UEg4YojRd1aAGO8G/6FcVEN1dt1q/Nc3fD2fN2LrTPQ9n+OX5jItEmnT/MxkulO+MAuQOmB2ZN3bUE=
