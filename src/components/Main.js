@@ -189,7 +189,7 @@ class PocketSquareCard extends React.Component {
 
   render() {
     return (
-      <Card style=>
+      <Card>
         <div style={styles.cardInner}>
           <CardMedia style={styles.media}>
             <img src={this.props.post.mainImage ? this.props.post.mainImage.src  : null} />
