@@ -21,7 +21,7 @@ warn "Pulling latest docker image..."
 docker pull potic/potic-client-webui:latest
 
 warn "Starting docker image..."
-docker run -dit --name potic-client-webui --link pocket-square-articles -p 80:80 potic/potic-client-webui:latest
+docker run -dit --name potic-client-webui -p 80:80 potic/potic-client-webui:latest
 
 warn "Currently running docker images"
 docker ps -a
