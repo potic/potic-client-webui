@@ -13,3 +13,5 @@ https://hub.docker.com/r/potic/potic-client-webui/
 == Documentation
 
 link:src/scripts/deploy[HOWTO: start service as docker container]
+
+link:docs/environments.adoc[Environments]
