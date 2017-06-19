@@ -34,3 +34,6 @@ bower_components/
 
 # Digitalocean #
 .travis/id_rsa
+
+# Build #
+dist
