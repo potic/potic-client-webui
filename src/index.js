@@ -1,7 +1,10 @@
-import 'core-js/fn/object/assign';
-import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './components/Main';
+import { makeMainRoutes } from './routes';
+import './index.css';
 
-// Render the main component into the dom
-ReactDOM.render(<App />, document.getElementById('app'));
+const routes = makeMainRoutes();
+
+ReactDOM.render(
+  routes,
+  document.getElementById('root')
+);
