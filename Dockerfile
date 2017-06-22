@@ -7,4 +7,4 @@ COPY package.json /usr/src/app/
 RUN npm install && npm cache clean --force
 COPY . /usr/src/app
 
-CMD [ "npm", "serve:dist" ]
+CMD [ "npm", "run", "serve:dist" ]
