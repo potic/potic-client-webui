@@ -4,11 +4,6 @@ node_js:
 - '7.8'
 services:
 - docker
-before_install:
-- openssl aes-256-cbc -K $encrypted_f0ebdbae76d9_key -iv $encrypted_f0ebdbae76d9_iv
-  -in deploy_prod.enc -out deploy/deploy_prod -d
-- openssl aes-256-cbc -K $encrypted_f0ebdbae76d9_key -iv $encrypted_f0ebdbae76d9_iv
-  -in deploy_dev.enc -out deploy/deploy_dev -d
 install:
 - npm install
 - npm run dist
