@@ -7,6 +7,5 @@ COPY package.json /usr/src/app/
 RUN npm install && npm cache clean --force
 COPY . /usr/src/app
 
-ARG ENVIRONMENT_NAME=test
-ENV ENVIRONMENT_NAME $ENVIRONMENT_NAME
-CMD [ "sh", "-c", "npm", "run", "serve:$ENVIRONMENT_NAME" ]
+ENV ENVIRONMENT_NAME test
+CMD [ "sh", "-c", "npm run serve:$ENVIRONMENT_NAME" ]
