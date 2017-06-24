@@ -8,4 +8,4 @@ RUN npm install && npm cache clean --force
 COPY . /usr/src/app
 
 EXPOSE 8000
-CMD [ "npm", "run", "serve:dist" ]
+CMD [ "npm", "run", "serve:$ENVIRONMENT_NAME" ]

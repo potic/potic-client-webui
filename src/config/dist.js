@@ -3,7 +3,8 @@
 import baseConfig from './base';
 
 let config = {
-  appEnv: 'dist'  // feel free to remove the appEnv property here
+  appEnv: 'dist',
+  auth0CallbackUrl: 'http://46.101.62.243/callback'
 };
 
 export default Object.freeze(Object.assign({}, baseConfig, config));
