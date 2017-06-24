@@ -20,6 +20,8 @@ before_script:
 - eval "$(ssh-agent -s)"
 - chmod 600 deploy/deploy_dev
 - ssh-add deploy/deploy_dev
+- chmod 600 deploy/deploy_prod
+- ssh-add deploy/deploy_prod
 
 script:
 - export DOCKER_REPO=potic/potic-client-webui
