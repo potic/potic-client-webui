@@ -72,7 +72,7 @@ const styles = {
   },
 };
 
-const initPosts = [
+const initSections = [
   {
     title: 'Getting started',
     firstChunk: {
@@ -129,13 +129,24 @@ class PocketSquareGrid extends React.Component {
     super(props);
 
     this.state = {
-      posts: initPosts,
+      sections: initSections,
+      blacklistedCards: [],
       nextPage: 0,
       size: 12,
     };
 
     this.handleScroll = this.handleScroll.bind(this);
     this.fetchCardData = this.fetchCardData.bind(this);
+    this.markCardAsRead = this.markCardAsRead.bind(this);
+  }
+
+  markCardAsRead(id) {
+    this.setState({
+      sections: this.state.sections,
+      size: this.state.size,
+      nextPage: this.state.nextPage,
+      blacklistedCards: this.state.blacklistedCards.concat([id])});
+
   }
 
   fetchData() {
@@ -144,12 +155,20 @@ class PocketSquareGrid extends React.Component {
     const url = 'http://188.166.174.189:40401/sandbox/section';
     axios.get(url)
       .then(res => {
-        const posts = res.data;
+        const sections = res.data;
         console.log(res);
         if (this.state.nextPage == 0) {
-          this.setState({ posts: posts, size: this.state.size, nextPage: 1 });
+          this.setState({
+            sections: sections,
+            size: this.state.size,
+            nextPage: 1,
+            blacklistedCards: this.state.blacklistedCards });
         } else {
-          this.setState({ posts: this.state.posts.concat(posts), size: this.state.size, nextPage: this.state.nextPage + 1 });
+          this.setState({
+            sections: this.state.sections.concat(sections),
+            size: this.state.size,
+            nextPage: this.state.nextPage + 1,
+            blacklistedCards: this.state.blacklistedCards });
         }
       });
   }
@@ -159,16 +178,20 @@ class PocketSquareGrid extends React.Component {
     console.log(ind);
 
 
-    const url = 'http://188.166.174.189:40401/sandbox/section/' + this.state.posts[ind]['id'] + '/' + this.state.posts[ind]['firstChunk']['nextChunkId'];
+    const url = 'http://188.166.174.189:40401/sandbox/section/' + this.state.sections[ind]['id'] + '/' + this.state.sections[ind]['firstChunk']['nextChunkId'];
     axios.get(url)
       .then(res => {
-        const posts = res.data;
+        const sections = res.data;
         console.log(res);
 
-        this.state.posts[ind]['firstChunk']['articles'].push.apply(this.state.posts[ind]['firstChunk']['articles'], posts['articles']);
-        this.state.posts[ind]['firstChunk']['nextChunkId'] = posts['nextChunkId'];
+        this.state.sections[ind]['firstChunk']['articles'].push.apply(this.state.sections[ind]['firstChunk']['articles'], sections['articles']);
+        this.state.sections[ind]['firstChunk']['nextChunkId'] = sections['nextChunkId'];
 
-        this.setState({ posts: this.state.posts, size: this.state.size, nextPage: this.state.nextPage + 1 });
+        this.setState({
+          sections: this.state.sections,
+          size: this.state.size,
+          nextPage: this.state.nextPage + 1 ,
+          blacklistedCards: this.state.blacklistedCards});
       });
   }
 
@@ -199,13 +222,13 @@ class PocketSquareGrid extends React.Component {
   render() {
     return (
       <div>
-        {Array(this.state.posts.length).fill().map((_, i) => (
+        {Array(this.state.sections.length).fill().map((_, i) => (
          <div>
-            <Subheader style={styles.subheader}>{this.state.posts[i]['title']}</Subheader>
+            <Subheader style={styles.subheader}>{this.state.sections[i]['title']}</Subheader>
             <GridList style={styles.gridList} cellHeight='auto' padding={10} cols={5}>
-              {this.state.posts[i]['firstChunk']['articles'].map((post) => (
-                <PocketSquareCard post={post} key={post.id} />
-              ))}
+              {this.state.sections[i]['firstChunk']['articles']
+                .filter((post) => {return this.state.blacklistedCards.indexOf(post.id) < 0;})
+                .map((post) => (<PocketSquareCard post={post} key={post.id} onMarkAsRead={this.markCardAsRead}/>))}
             </GridList>
             <FlatButton label="Expand" fullWidth={true} onClick={() => {this.fetchCardData(i)}}/>
           </div>
@@ -234,8 +257,8 @@ class PocketSquareCard extends React.Component {
             {this.props.post.excerpt}
           </CardText>
           <CardActions>
-            <FlatButton label="@pocket" />
-            <FlatButton label="mark as read" />
+            <FlatButton label="@pocket"  />
+            <FlatButton label="mark as read" onClick={() => this.props.onMarkAsRead(this.props.post.id)} />
           </CardActions>
         </div>
       </Card>
