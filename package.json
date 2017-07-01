@@ -63,7 +63,6 @@
   },
   "dependencies": {
     "auth0-js": "^8.7.0",
-    "axios": "^0.16.0",
     "bootstrap": "^3.3.7",
     "core-js": "^2.0.0",
     "material-ui": "^0.17.1",

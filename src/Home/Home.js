@@ -4,7 +4,6 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
-import axios from 'axios';
 import {GridList, GridTile} from 'material-ui/GridList';
 import Subheader from 'material-ui/Subheader';
 import IconButton from 'material-ui/IconButton';
@@ -21,7 +20,7 @@ class Home extends Component {
         {
           isAuthenticated() && (
             <MuiThemeProvider>
-              <PocketSquareGrid />
+              <PocketSquareGrid {...this.props} />
             </MuiThemeProvider>
             )
         }
@@ -140,11 +139,13 @@ class PocketSquareGrid extends React.Component {
 
   fetchData() {
     console.log('START FETCH FOR PAGE '+ this.state.nextPage);
-//    const url = 'http://188.166.174.189:28103/article/byUserId/58b1800dc9e77c0001d1d702/unread?page=' + this.state.nextPage + '&size=' + this.state.size;
-    const url = 'http://188.166.174.189:40401/sandbox/section';
-    axios.get(url)
+
+    const { authFetch } = this.props.auth;
+    const API_URL = 'http://188.166.174.189:40401';
+
+    authFetch(`${API_URL}/sandbox/section`)
       .then(res => {
-        const posts = res.data;
+        const posts = res;
         console.log(res);
         if (this.state.nextPage == 0) {
           this.setState({ posts: posts, size: this.state.size, nextPage: 1 });
@@ -158,9 +159,10 @@ class PocketSquareGrid extends React.Component {
     console.log('fetch card data');
     console.log(ind);
 
+    const { authFetch } = this.props.auth;
+    const API_URL = 'http://188.166.174.189:40401';
 
-    const url = 'http://188.166.174.189:40401/sandbox/section/' + this.state.posts[ind]['id'] + '/' + this.state.posts[ind]['firstChunk']['nextChunkId'];
-    axios.get(url)
+    authFetch(`${API_URL}/sandbox/section/` + this.state.posts[ind]['id'] + '/' + this.state.posts[ind]['firstChunk']['nextChunkId'])
       .then(res => {
         const posts = res.data;
         console.log(res);
