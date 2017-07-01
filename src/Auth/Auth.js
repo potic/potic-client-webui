@@ -4,6 +4,8 @@ import config from 'config';
 
 export default class Auth {
 
+  userProfile;
+
   constructor() {
     this.auth0 = new auth0.WebAuth({
       domain: config.auth0Domain,
@@ -11,13 +13,14 @@ export default class Auth {
       redirectUri: config.auth0CallbackUrl,
       audience: `https://${config.auth0Domain}/userinfo`,
       responseType: 'token id_token',
-      scope: 'openid'
+      scope: 'openid profile'
     });
 
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
     this.handleAuthentication = this.handleAuthentication.bind(this);
     this.isAuthenticated = this.isAuthenticated.bind(this);
+    this.getProfile = this.getProfile.bind(this);
   }
 
   login() {
@@ -61,5 +64,23 @@ export default class Auth {
     // access token's expiry time
     let expiresAt = JSON.parse(localStorage.getItem('expires_at'));
     return new Date().getTime() < expiresAt;
+  }
+
+  getAccessToken() {
+    const accessToken = localStorage.getItem('access_token');
+    if (!accessToken) {
+      throw new Error('No access token found');
+    }
+    return accessToken;
+  }
+
+  getProfile(cb) {
+    let accessToken = this.getAccessToken();
+    this.auth0.client.userInfo(accessToken, (err, profile) => {
+      if (profile) {
+        this.userProfile = profile;
+      }
+      cb(err, profile);
+    });
   }
 }
