@@ -8,6 +8,7 @@ import {GridList, GridTile} from 'material-ui/GridList';
 import Subheader from 'material-ui/Subheader';
 import IconButton from 'material-ui/IconButton';
 import StarBorder from 'material-ui/svg-icons/toggle/star-border';
+import config from 'config';
 
 class Home extends Component {
   login() {
@@ -141,9 +142,8 @@ class PocketSquareGrid extends React.Component {
     console.log('START FETCH FOR PAGE '+ this.state.nextPage);
 
     const { authFetch } = this.props.auth;
-    const API_URL = 'http://188.166.174.189:40401';
 
-    authFetch(`${API_URL}/sandbox/section`)
+    authFetch(`${config.services_aggregator}/sandbox/section`)
       .then(res => {
         const posts = res;
         console.log(res);
@@ -160,9 +160,8 @@ class PocketSquareGrid extends React.Component {
     console.log(ind);
 
     const { authFetch } = this.props.auth;
-    const API_URL = 'http://188.166.174.189:40401';
 
-    authFetch(`${API_URL}/sandbox/section/` + this.state.posts[ind]['id'] + '/' + this.state.posts[ind]['firstChunk']['nextChunkId'])
+    authFetch(`${config.services_aggregator}/sandbox/section/` + this.state.posts[ind]['id'] + '/' + this.state.posts[ind]['firstChunk']['nextChunkId'])
       .then(res => {
         const posts = res.data;
         console.log(res);
