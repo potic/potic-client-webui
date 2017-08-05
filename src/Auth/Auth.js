@@ -11,7 +11,7 @@ export default class Auth {
       domain: config.auth0_domain,
       clientID: config.auth0_clientId,
       redirectUri: config.auth0_callbackUrl,
-      audience: `https://${config.auth0_domain}/userinfo`,
+      audience: config.auth0_audience,
       responseType: 'token id_token',
       scope: 'openid profile get:sections'
     });
