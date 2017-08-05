@@ -147,7 +147,7 @@ class PocketSquareGrid extends React.Component {
 
     axios.get(`${config.services_aggregator}/sandbox/section`, { headers })
       .then(res => {
-        const posts = res;
+        const posts = res.data;
         console.log(res);
         if (this.state.nextPage == 0) {
           this.setState({ posts: posts, size: this.state.size, nextPage: 1 });
