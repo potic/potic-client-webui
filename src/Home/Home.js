@@ -4,11 +4,12 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
-import axios from 'axios';
 import {GridList, GridTile} from 'material-ui/GridList';
 import Subheader from 'material-ui/Subheader';
 import IconButton from 'material-ui/IconButton';
 import StarBorder from 'material-ui/svg-icons/toggle/star-border';
+import config from 'config';
+import axios from 'axios';
 
 class Home extends Component {
   login() {
@@ -21,7 +22,7 @@ class Home extends Component {
         {
           isAuthenticated() && (
             <MuiThemeProvider>
-              <PocketSquareGrid />
+              <PocketSquareGrid {...this.props} />
             </MuiThemeProvider>
             )
         }
@@ -151,9 +152,11 @@ class PocketSquareGrid extends React.Component {
 
   fetchData() {
     console.log('START FETCH FOR PAGE '+ this.state.nextPage);
-//    const url = 'http://188.166.174.189:28103/article/byUserId/58b1800dc9e77c0001d1d702/unread?page=' + this.state.nextPage + '&size=' + this.state.size;
-    const url = 'http://188.166.174.189:40401/sandbox/section';
-    axios.get(url)
+
+    const { getAccessToken } = this.props.auth;
+    const headers = { 'Authorization': `Bearer ${getAccessToken()}`}
+
+    axios.get(`${config.services_aggregator}/user/me/section`, { headers })
       .then(res => {
         const sections = res.data;
         console.log(res);
@@ -177,9 +180,10 @@ class PocketSquareGrid extends React.Component {
     console.log('fetch card data');
     console.log(ind);
 
+    const { getAccessToken } = this.props.auth;
+    const headers = { 'Authorization': `Bearer ${getAccessToken()}`}
 
-    const url = 'http://188.166.174.189:40401/sandbox/section/' + this.state.sections[ind]['id'] + '/' + this.state.sections[ind]['firstChunk']['nextChunkId'];
-    axios.get(url)
+    axios.get(`${config.services_aggregator}/user/me/section/` + this.state.sections[ind]['id'] + '/' + this.state.sections[ind]['firstChunk']['nextChunkId'], { headers })
       .then(res => {
         const sections = res.data;
         console.log(res);
