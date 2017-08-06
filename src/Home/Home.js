@@ -145,7 +145,7 @@ class PocketSquareGrid extends React.Component {
     const { getAccessToken } = this.props.auth;
     const headers = { 'Authorization': `Bearer ${getAccessToken()}`}
 
-    axios.get(`${config.services_aggregator}/sandbox/section`, { headers })
+    axios.get(`${config.services_aggregator}/user/me/section`, { headers })
       .then(res => {
         const posts = res.data;
         console.log(res);
@@ -164,7 +164,7 @@ class PocketSquareGrid extends React.Component {
     const { getAccessToken } = this.props.auth;
     const headers = { 'Authorization': `Bearer ${getAccessToken()}`}
 
-    axios.get(`${config.services_aggregator}/sandbox/section/` + this.state.posts[ind]['id'] + '/' + this.state.posts[ind]['firstChunk']['nextChunkId'], { headers })
+    axios.get(`${config.services_aggregator}/user/me/section/` + this.state.posts[ind]['id'] + '/' + this.state.posts[ind]['firstChunk']['nextChunkId'], { headers })
       .then(res => {
         const posts = res.data;
         console.log(res);
