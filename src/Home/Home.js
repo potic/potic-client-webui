@@ -147,8 +147,8 @@ class PocketSquareGrid extends React.Component {
       size: this.state.size,
       nextPage: this.state.nextPage,
       blacklistedCards: this.state.blacklistedCards.concat([id])});
-    fetchCardData(section_ind, 1);
-    postMarkCardAsRead(id);
+    this.fetchCardData(section_ind, 1);
+    this.postMarkCardAsRead(id);
   }
 
   postMarkCardAsRead(id) {
