@@ -141,13 +141,23 @@ class PocketSquareGrid extends React.Component {
     this.markCardAsRead = this.markCardAsRead.bind(this);
   }
 
-  markCardAsRead(id) {
+  markCardAsRead(id, section_ind) {
     this.setState({
       sections: this.state.sections,
       size: this.state.size,
       nextPage: this.state.nextPage,
       blacklistedCards: this.state.blacklistedCards.concat([id])});
+    fetchCardData(section_ind, 1);
+    postMarkCardAsRead(id);
+  }
 
+  postMarkCardAsRead(id) {
+    console.log('MARK CARD AS READ');
+
+    const { getAccessToken } = this.props.auth;
+    const headers = { 'Authorization': `Bearer ${getAccessToken()}`}
+
+    //axios.get(`${config.services_aggregator}/user/me/section`, { headers })
   }
 
   fetchData() {
@@ -176,25 +186,25 @@ class PocketSquareGrid extends React.Component {
       });
   }
 
-  fetchCardData(ind) {
+  fetchCardData(ind, count) {
     console.log('fetch card data');
     console.log(ind);
 
     const { getAccessToken } = this.props.auth;
     const headers = { 'Authorization': `Bearer ${getAccessToken()}`}
 
-    axios.get(`${config.services_aggregator}/user/me/section/` + this.state.sections[ind]['id'] + '/' + this.state.sections[ind]['firstChunk']['nextChunkId'], { headers })
+    axios.get(`${config.services_aggregator}/user/me/section/${this.state.sections[ind]['id']}?cursorId=${this.state.sections[ind]['firstChunk']['nextCursorId']}&count=${count}`, { headers })
       .then(res => {
         const sections = res.data;
         console.log(res);
 
         this.state.sections[ind]['firstChunk']['articles'].push.apply(this.state.sections[ind]['firstChunk']['articles'], sections['articles']);
-        this.state.sections[ind]['firstChunk']['nextChunkId'] = sections['nextChunkId'];
+        this.state.sections[ind]['firstChunk']['nextCursorId'] = sections['nextCursorId'];
 
         this.setState({
           sections: this.state.sections,
           size: this.state.size,
-          nextPage: this.state.nextPage + 1 ,
+          nextPage: this.state.nextPage,
           blacklistedCards: this.state.blacklistedCards});
       });
   }
@@ -232,9 +242,9 @@ class PocketSquareGrid extends React.Component {
             <GridList style={styles.gridList} cellHeight='auto' padding={10} cols={5}>
               {this.state.sections[i]['firstChunk']['articles']
                 .filter((post) => {return this.state.blacklistedCards.indexOf(post.id) < 0;})
-                .map((post) => (<PocketSquareCard post={post} key={post.id} onMarkAsRead={this.markCardAsRead}/>))}
+                .map((post) => (<PocketSquareCard post={post} key={post.id} onMarkAsRead={(id) => this.markCardAsRead(id, i)}/>))}
             </GridList>
-            <FlatButton label="Expand" fullWidth={true} onClick={() => {this.fetchCardData(i)}}/>
+            <FlatButton label="Expand" fullWidth={true} onClick={() => {this.fetchCardData(i, 5)}}/>
           </div>
          ))}
       </div>
