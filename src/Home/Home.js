@@ -157,7 +157,7 @@ class PocketSquareGrid extends React.Component {
     const { getAccessToken } = this.props.auth;
     const headers = { 'Authorization': `Bearer ${getAccessToken()}`}
 
-    //axios.get(`${config.services_aggregator}/user/me/section`, { headers })
+    axios.post(`${config.services_articles}/user/me/article/${id}/markAsRead`, {}, { headers })
   }
 
   fetchData() {
