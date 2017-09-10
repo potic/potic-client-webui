@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import { Navbar, Button } from 'react-bootstrap';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
@@ -8,23 +9,42 @@ import {GridList, GridTile} from 'material-ui/GridList';
 import Subheader from 'material-ui/Subheader';
 import IconButton from 'material-ui/IconButton';
 import StarBorder from 'material-ui/svg-icons/toggle/star-border';
+import Profile from '../Profile/Profile';
 import config from 'config';
 import axios from 'axios';
+import './Home.css';
 
 class Home extends Component {
+
   login() {
     this.props.auth.login();
   }
+
+  logout() {
+    this.props.auth.logout();
+  }
+
   render() {
     const { isAuthenticated } = this.props.auth;
     return (
       <div className="container">
         {
           isAuthenticated() && (
-            <MuiThemeProvider>
-              <PocketSquareGrid {...this.props} />
-            </MuiThemeProvider>
-            )
+            <div>
+              <Navbar fluid>
+                <Navbar.Header>
+                  <Profile {...this.props} />
+                  <Button bsStyle="primary" className="btn-margin" onClick={this.logout.bind(this)}>
+                    Log Out
+                  </Button>
+                </Navbar.Header>
+              </Navbar>
+
+              <MuiThemeProvider>
+                <PocketSquareGrid {...this.props} />
+              </MuiThemeProvider>
+            </div>
+          )
         }
         {
           !isAuthenticated() && (
@@ -80,70 +100,17 @@ const styles = {
   },
 };
 
-const initSections = [
-  {
-    title: 'Getting started',
-    firstChunk: {
-    articles: [{
-      img: 'images/grid-list/00-52-29-429_640.jpg',
-      title: 'Breakfast',
-      author: 'jill111',
-      mainImage: {
-        src: "../images/yeoman.png"
-      },
-      id: "1",
-      source: "aaa",
-      excerpt: "aaa"
-    },
-    {
-      img: 'images/grid-list/burger-827309_640.jpg',
-      title: 'Tasty burger',
-      author: 'pashminu',
-      mainImage: {
-        src: "../images/yeoman.png"
-      },
-      id: "2",
-      source: "aaa",
-      excerpt: "aaa"
-    },
-    {
-      img: 'images/grid-list/camera-813814_640.jpg',
-      title: 'Camera',
-      author: 'Danson67',
-      mainImage: {
-        src: "../images/yeoman.png"
-      },
-      id: "3",
-      source: "aaa",
-      excerpt: "aaa"
-    },
-    {
-      img: 'images/grid-list/morning-819362_640.jpg',
-      title: 'Morning',
-      author: 'fancycrave1',
-      mainImage: {
-        src: "../images/yeoman.png"
-      },
-      id: "4",
-      source: "aaa",
-      excerpt: "aaa"
-    }]
-    }
-  }
-  ];
-
 class PocketSquareGrid extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      sections: initSections,
+      sections: [],
       blacklistedCards: [],
       nextPage: 0,
       size: 12,
     };
 
-    this.handleScroll = this.handleScroll.bind(this);
     this.fetchCardData = this.fetchCardData.bind(this);
     this.markCardAsRead = this.markCardAsRead.bind(this);
   }
@@ -227,21 +194,6 @@ class PocketSquareGrid extends React.Component {
 
   componentWillUnmount() {
     window.removeEventListener("scroll", this.handleScroll);
-  }
-
-
-  handleScroll() {
-    /*
-    const windowHeight = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight;
-    const body = document.body;
-    const html = document.documentElement;
-    const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
-    const windowBottom = windowHeight + window.pageYOffset;
-    if (windowBottom >= docHeight) {
-      this.fetchData();
-      console.log('bottom reached');
-    }
-    */
   }
 
   render() {
