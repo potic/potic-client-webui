@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import { Navbar, Button } from 'react-bootstrap';
+import AlertContainer from 'react-alert'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
@@ -8,28 +10,47 @@ import {GridList, GridTile} from 'material-ui/GridList';
 import Subheader from 'material-ui/Subheader';
 import IconButton from 'material-ui/IconButton';
 import StarBorder from 'material-ui/svg-icons/toggle/star-border';
+import Profile from '../Profile/Profile';
 import config from 'config';
 import axios from 'axios';
+import './Home.css';
 
 class Home extends Component {
+
   login() {
     this.props.auth.login();
   }
+
+  logout() {
+    this.props.auth.logout();
+  }
+
   render() {
     const { isAuthenticated } = this.props.auth;
     return (
       <div className="container">
         {
           isAuthenticated() && (
-            <MuiThemeProvider>
-              <PocketSquareGrid {...this.props} />
-            </MuiThemeProvider>
-            )
+            <div>
+              <Navbar fluid>
+                <Navbar.Header>
+                  <Profile {...this.props} />
+                  <Button bsStyle="primary" className="btn-margin" onClick={this.logout.bind(this)}>
+                    Log Out
+                  </Button>
+                </Navbar.Header>
+              </Navbar>
+
+              <MuiThemeProvider>
+                <PocketSquareGrid {...this.props} />
+              </MuiThemeProvider>
+            </div>
+          )
         }
         {
           !isAuthenticated() && (
               <h4>
-                You are not logged in! Please{' '}
+                You are not logged in! Press{' '}
                 <a
                   style={{ cursor: 'pointer' }}
                   onClick={this.login.bind(this)}
@@ -80,92 +101,50 @@ const styles = {
   },
 };
 
-const initSections = [
-  {
-    title: 'Getting started',
-    firstChunk: {
-    articles: [{
-      img: 'images/grid-list/00-52-29-429_640.jpg',
-      title: 'Breakfast',
-      author: 'jill111',
-      mainImage: {
-        src: "../images/yeoman.png"
-      },
-      id: "1",
-      source: "aaa",
-      excerpt: "aaa"
-    },
-    {
-      img: 'images/grid-list/burger-827309_640.jpg',
-      title: 'Tasty burger',
-      author: 'pashminu',
-      mainImage: {
-        src: "../images/yeoman.png"
-      },
-      id: "2",
-      source: "aaa",
-      excerpt: "aaa"
-    },
-    {
-      img: 'images/grid-list/camera-813814_640.jpg',
-      title: 'Camera',
-      author: 'Danson67',
-      mainImage: {
-        src: "../images/yeoman.png"
-      },
-      id: "3",
-      source: "aaa",
-      excerpt: "aaa"
-    },
-    {
-      img: 'images/grid-list/morning-819362_640.jpg',
-      title: 'Morning',
-      author: 'fancycrave1',
-      mainImage: {
-        src: "../images/yeoman.png"
-      },
-      id: "4",
-      source: "aaa",
-      excerpt: "aaa"
-    }]
-    }
-  }
-  ];
-
 class PocketSquareGrid extends React.Component {
+
+  alertOptions = {
+    offset: 14,
+    position: 'top left',
+    theme: 'light',
+    time: 5000,
+    transition: 'scale'
+  }
+
   constructor(props) {
     super(props);
 
     this.state = {
-      sections: initSections,
+      sections: [],
       blacklistedCards: [],
       nextPage: 0,
       size: 12,
     };
 
-    this.handleScroll = this.handleScroll.bind(this);
     this.fetchCardData = this.fetchCardData.bind(this);
     this.markCardAsRead = this.markCardAsRead.bind(this);
   }
 
   markCardAsRead(id, section_ind) {
-    this.setState({
-      focusCardId: "",
-      sections: this.state.sections,
-      size: this.state.size,
-      nextPage: this.state.nextPage,
-      blacklistedCards: this.state.blacklistedCards.concat([id])});
-    this.fetchCardData(section_ind, 1, false);
-    this.postMarkCardAsRead(id);
-  }
-
-  postMarkCardAsRead(id) {
     console.log('MARK CARD AS READ');
 
     const { getAccessToken } = this.props.auth;
     const headers = { 'Authorization': `Bearer ${getAccessToken()}`}
 
     axios.post(`${config.services_articles}/user/me/article/${id}/markAsRead`, {}, { headers })
+      .then(res => {
+        this.setState({
+          focusCardId: "",
+          sections: this.state.sections,
+          size: this.state.size,
+          nextPage: this.state.nextPage,
+          blacklistedCards: this.state.blacklistedCards.concat([id])});
+        this.fetchCardData(section_ind, 1, false);
+      })
+      .catch(function (error) {
+        console.log(error);
+        message.error('Can\'t mark card as read: ' + error)
+      });
   }
 
   fetchData() {
@@ -193,6 +172,10 @@ class PocketSquareGrid extends React.Component {
             nextPage: this.state.nextPage + 1,
             blacklistedCards: this.state.blacklistedCards });
         }
+      })
+      .catch(function (error) {
+        console.log(error);
+        message.error('Can\'t get cards: ' + error)
       });
   }
 
@@ -217,6 +200,10 @@ class PocketSquareGrid extends React.Component {
           size: this.state.size,
           nextPage: this.state.nextPage,
           blacklistedCards: this.state.blacklistedCards});
+      })
+      .catch(function (error) {
+        console.log(error);
+        message.error('Can\'t get cards: ' + error)
       });
   }
 
@@ -229,24 +216,11 @@ class PocketSquareGrid extends React.Component {
     window.removeEventListener("scroll", this.handleScroll);
   }
 
-
-  handleScroll() {
-    /*
-    const windowHeight = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight;
-    const body = document.body;
-    const html = document.documentElement;
-    const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
-    const windowBottom = windowHeight + window.pageYOffset;
-    if (windowBottom >= docHeight) {
-      this.fetchData();
-      console.log('bottom reached');
-    }
-    */
-  }
-
   render() {
     return (
       <div>
+        <AlertContainer ref={(msg) => global.message = msg} {...this.alertOptions} />
+
         {Array(this.state.sections.length).fill().map((_, i) => (
          <div>
             <Subheader style={styles.subheader}>{this.state.sections[i]['title']}</Subheader>

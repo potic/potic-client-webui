@@ -73,6 +73,7 @@
     "react-dom": "^15.5.4",
     "react-router": "^4.1.1",
     "react-router-dom": "^4.1.1",
+    "react-alert": "^2.3.0",
     "react-toolbox": "^2.0.0-beta.7"
   }
 }
