@@ -20,7 +20,7 @@ class Profile extends Component {
     const { profile } = this.state;
     return (
       <div className="profile-area">
-        <img src={profile.picture} alt="profile" />
+        <img src={profile.picture} />
         {'   '}{profile.name}
       </div>
     );
