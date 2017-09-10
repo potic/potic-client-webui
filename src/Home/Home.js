@@ -49,7 +49,7 @@ class Home extends Component {
         {
           !isAuthenticated() && (
               <h4>
-                You are not logged in! Please{' '}
+                You are not logged in! Press{' '}
                 <a
                   style={{ cursor: 'pointer' }}
                   onClick={this.login.bind(this)}
@@ -116,23 +116,25 @@ class PocketSquareGrid extends React.Component {
   }
 
   markCardAsRead(id, section_ind) {
-    this.setState({
-      focusCardId: "",
-      sections: this.state.sections,
-      size: this.state.size,
-      nextPage: this.state.nextPage,
-      blacklistedCards: this.state.blacklistedCards.concat([id])});
-    this.fetchCardData(section_ind, 1, false);
-    this.postMarkCardAsRead(id);
-  }
-
-  postMarkCardAsRead(id) {
     console.log('MARK CARD AS READ');
 
     const { getAccessToken } = this.props.auth;
     const headers = { 'Authorization': `Bearer ${getAccessToken()}`}
 
     axios.post(`${config.services_articles}/user/me/article/${id}/markAsRead`, {}, { headers })
+      .then(res => {
+        this.setState({
+          focusCardId: "",
+          sections: this.state.sections,
+          size: this.state.size,
+          nextPage: this.state.nextPage,
+          blacklistedCards: this.state.blacklistedCards.concat([id])});
+        this.fetchCardData(section_ind, 1, false);
+        this.postMarkCardAsRead(id);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
 
   fetchData() {
