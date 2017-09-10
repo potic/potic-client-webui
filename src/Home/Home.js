@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Navbar, Button } from 'react-bootstrap';
+import AlertContainer from 'react-alert'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
@@ -101,6 +102,15 @@ const styles = {
 };
 
 class PocketSquareGrid extends React.Component {
+
+  alertOptions = {
+    offset: 14,
+    position: 'top left',
+    theme: 'light',
+    time: 5000,
+    transition: 'scale'
+  }
+
   constructor(props) {
     super(props);
 
@@ -130,10 +140,10 @@ class PocketSquareGrid extends React.Component {
           nextPage: this.state.nextPage,
           blacklistedCards: this.state.blacklistedCards.concat([id])});
         this.fetchCardData(section_ind, 1, false);
-        this.postMarkCardAsRead(id);
       })
       .catch(function (error) {
         console.log(error);
+        message.error('Can\'t mark card as read: ' + error)
       });
   }
 
@@ -162,6 +172,10 @@ class PocketSquareGrid extends React.Component {
             nextPage: this.state.nextPage + 1,
             blacklistedCards: this.state.blacklistedCards });
         }
+      })
+      .catch(function (error) {
+        console.log(error);
+        message.error('Can\'t get cards: ' + error)
       });
   }
 
@@ -186,6 +200,10 @@ class PocketSquareGrid extends React.Component {
           size: this.state.size,
           nextPage: this.state.nextPage,
           blacklistedCards: this.state.blacklistedCards});
+      })
+      .catch(function (error) {
+        console.log(error);
+        message.error('Can\'t get cards: ' + error)
       });
   }
 
@@ -201,6 +219,8 @@ class PocketSquareGrid extends React.Component {
   render() {
     return (
       <div>
+        <AlertContainer ref={(msg) => global.message = msg} {...this.alertOptions} />
+
         {Array(this.state.sections.length).fill().map((_, i) => (
          <div>
             <Subheader style={styles.subheader}>{this.state.sections[i]['title']}</Subheader>
