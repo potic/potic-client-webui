@@ -78,6 +78,21 @@ const styles = {
   subheader: {
     fontSize: '45px',
   },
+  subheaderContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  scrollContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  scrollLeft: {
+    fontSize: '45px',
+  },
+  scrollRight: {
+    fontSize: '45px',
+  }
 };
 
 const initSections = [
@@ -151,6 +166,7 @@ class PocketSquareGrid extends React.Component {
   markCardAsRead(id, section_ind) {
     this.setState({
       focusCardId: "",
+      sectionInd: "",
       sections: this.state.sections,
       size: this.state.size,
       nextPage: this.state.nextPage,
@@ -181,6 +197,7 @@ class PocketSquareGrid extends React.Component {
         if (this.state.nextPage == 0) {
           this.setState({
             focusCardId: "",
+            sectionInd: "",
             sections: sections,
             size: this.state.size,
             nextPage: 1,
@@ -188,6 +205,7 @@ class PocketSquareGrid extends React.Component {
         } else {
           this.setState({
             focusCardId: "",
+            sectionInd: "",
             sections: this.state.sections.concat(sections),
             size: this.state.size,
             nextPage: this.state.nextPage + 1,
@@ -213,6 +231,7 @@ class PocketSquareGrid extends React.Component {
 
         this.setState({
           focusCardId: shouldFocus ? sections['articles'][sections['articles'].length - 1]['id'] : "",
+          sectionInd: ind,
           sections: this.state.sections,
           size: this.state.size,
           nextPage: this.state.nextPage,
@@ -244,39 +263,79 @@ class PocketSquareGrid extends React.Component {
     */
   }
 
+  showCardData(sectionInd) {
+
+  }
+
   render() {
     return (
       <div>
         {Array(this.state.sections.length).fill().map((_, i) => (
-         <div>
-            <Subheader style={styles.subheader}>{this.state.sections[i]['title']}</Subheader>
-            <div style={styles.gridList} >
-              {this.state.sections[i]['firstChunk']['articles']
-                .filter((post) => {return this.state.blacklistedCards.indexOf(post.id) < 0;})
-                .map((post) => (<PocketSquareCard post={post} shouldFocus={this.state.focusCardId === post.id} key={post.id} onMarkAsRead={(id) => this.markCardAsRead(id, i)}/>))}
-            </div>
-            <FlatButton label="Expand" fullWidth={true} onClick={() => {this.fetchCardData(i, 5, true)}}/>
-          </div>
+          <PocketSquareSection
+            fetchCardData={(s, b) => this.fetchCardData(i, s, b) }
+            markCardAsRead={this.markCardAsRead }
+            section={this.state.sections[i]}
+            blacklistedCards={this.state.blacklistedCards}
+            focusCardId={ i === this.state.sectionInd ? this.state.focusCardId : ""} />
          ))}
       </div>
     );
   }
 }
 
-class PocketSquareCard extends React.Component {
+class PocketSquareSection extends React.Component {
   constructor(props) {
       super(props);
   }
 
-  componentDidMount() {
-    if (this.props.shouldFocus) {
-      ReactDOM.findDOMNode(this.cardNode).scrollIntoView({block: 'end', behavior: 'smooth'});
+  componentDidUpdate() {
+    console.log('COMPONENT MOUNT');
+    if (this.cardNode && this.focusCardId !== "") {
+      console.log('SCROLL');
+      var rect = ReactDOM.findDOMNode(this.cardNode).getBoundingClientRect(); //.scrollIntoView({block: 'end', behavior: 'smooth'});
+      console.log(rect.right);
+      ReactDOM.findDOMNode(this.cardContainer).scrollLeft = rect.right;
     }
   }
 
   render() {
     return (
-      <Card style={styles.card} ref={(node) => { this.cardNode = node; }}>
+      <div>
+         <div style={styles.subheaderContainer}>
+           <Subheader style={styles.subheader}>{this.props.section['title']}</Subheader>
+           <div style={styles.scrollContainer}>
+             <FlatButton label="<" style={styles.scrollLeft} onClick={() => {this.props.fetchCardData(5, true)}}/>
+             <FlatButton label=">" style={styles.scrollRight} onClick={() => {this.props.fetchCardData(5, true)}}/>
+           </div>
+         </div>
+         <div style={styles.gridList} ref={(node) => {this.cardContainer = node;}}>
+           {this.props.section['firstChunk']['articles']
+             .filter((post) => {return this.props.blacklistedCards.indexOf(post.id) < 0;})
+             .map((post) => (<PocketSquareCard
+               post={post}
+               key={post.id}
+               ref={(node) => {
+                 console.log('CALCULATING REf');
+                 if (this.props.focusCardId === post.id) {
+                   console.log('FOUND REf');
+                   this.cardNode = node;
+                 }
+               }}
+               onMarkAsRead={(id) => this.props.markCardAsRead(id, i)}/>))}
+         </div>
+       </div>
+    );
+  }
+};
+
+class PocketSquareCard extends React.Component {
+  constructor(props) {
+      super(props);
+  }
+
+  render() {
+    return (
+      <Card style={styles.card} >
         <div style={styles.cardInner}>
           <CardMedia style={styles.media}>
             <img src={this.props.post.mainImage ? this.props.post.mainImage.src  : null} />
