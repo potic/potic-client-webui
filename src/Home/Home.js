@@ -289,12 +289,11 @@ class PocketSquareSection extends React.Component {
   }
 
   componentDidUpdate() {
-    console.log('COMPONENT MOUNT');
-    if (this.cardNode && this.focusCardId !== "") {
-      console.log('SCROLL');
-      var rect = ReactDOM.findDOMNode(this.cardNode).getBoundingClientRect(); //.scrollIntoView({block: 'end', behavior: 'smooth'});
-      console.log(rect.right);
-      ReactDOM.findDOMNode(this.cardContainer).scrollLeft = rect.right;
+    if (this.cardNode && this.props.focusCardId !== "") {
+      var containerDOM = ReactDOM.findDOMNode(this.cardContainer);
+      containerDOM.scrollLeft = 0;
+      var rect = ReactDOM.findDOMNode(this.cardNode).getBoundingClientRect();
+      containerDOM.scrollLeft = rect.right;
     }
   }
 
@@ -304,7 +303,7 @@ class PocketSquareSection extends React.Component {
          <div style={styles.subheaderContainer}>
            <Subheader style={styles.subheader}>{this.props.section['title']}</Subheader>
            <div style={styles.scrollContainer}>
-             <FlatButton label="<" style={styles.scrollLeft} onClick={() => {this.props.fetchCardData(5, true)}}/>
+             <FlatButton label="<" style={styles.scrollLeft} onClick={() => {}}/>
              <FlatButton label=">" style={styles.scrollRight} onClick={() => {this.props.fetchCardData(5, true)}}/>
            </div>
          </div>
@@ -315,9 +314,7 @@ class PocketSquareSection extends React.Component {
                post={post}
                key={post.id}
                ref={(node) => {
-                 console.log('CALCULATING REf');
                  if (this.props.focusCardId === post.id) {
-                   console.log('FOUND REf');
                    this.cardNode = node;
                  }
                }}
