@@ -14,8 +14,8 @@ export default class Auth {
       clientID: config.auth0_clientId,
       redirectUri: config.auth0_callbackUrl,
       audience: config.auth0_audience,
-      responseType: 'token id_token',
-      scope: 'openid profile get:articles update:articles'
+      responseType: config.auth0_response,
+      scope: config.auth0_scope
     });
 
     this.login = this.login.bind(this);
