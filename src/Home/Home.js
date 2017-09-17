@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Navbar, Button } from 'react-bootstrap';
+import { Navbar, Nav, NavItem, Button } from 'react-bootstrap';
 import AlertContainer from 'react-alert'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -34,11 +34,20 @@ class Home extends Component {
             <div>
               <Navbar fluid>
                 <Navbar.Header>
-                  <Profile {...this.props} />
-                  <Button bsStyle="primary" className="btn-margin" onClick={this.logout.bind(this)}>
-                    Log Out
-                  </Button>
+                  <Navbar.Brand>
+                    <a href="#">potic</a>
+                  </Navbar.Brand>
                 </Navbar.Header>
+                <Nav pullRight>
+                  <NavItem>
+                    <Profile {...this.props} />
+                  </NavItem>
+                  <NavItem>
+                    <Button bsStyle="primary" className="btn-margin" onClick={this.logout.bind(this)}>
+                      Log Out
+                    </Button>
+                  </NavItem>
+                </Nav>
               </Navbar>
 
               <MuiThemeProvider>
@@ -234,7 +243,7 @@ class PocketSquareGrid extends React.Component {
   componentWillUnmount() {
     window.removeEventListener("scroll", this.handleScroll);
   }
-  
+
   render() {
     return (
       <div>
