@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Panel, ControlLabel, Glyphicon } from 'react-bootstrap';
-import './Profile.css';
+import { Image } from 'react-bootstrap';
 
 class Profile extends Component {
 
@@ -19,9 +18,10 @@ class Profile extends Component {
   render() {
     const { profile } = this.state;
     return (
-      <div className="profile-area">
-        <img src={profile.picture} />
-        {'   '}{profile.name}
+      <div>
+        <Image width={32} height={32} src={profile.picture} circle />
+        <span>   </span>
+        <span>{profile.name}</span>
       </div>
     );
   }

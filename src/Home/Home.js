@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Navbar, Nav, NavItem, Button } from 'react-bootstrap';
+import { Grid, Row, Col, Button, PageHeader } from 'react-bootstrap';
 import AlertContainer from 'react-alert'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -28,27 +28,25 @@ class Home extends Component {
   render() {
     const { isAuthenticated } = this.props.auth;
     return (
-      <div className="container">
+      <div className="container-fluid">
         {
           isAuthenticated() && (
             <div>
-              <Navbar fluid>
-                <Navbar.Header>
-                  <Navbar.Brand>
-                    <a href="#">potic</a>
-                  </Navbar.Brand>
-                </Navbar.Header>
-                <Nav pullRight>
-                  <NavItem>
-                    <Profile {...this.props} />
-                  </NavItem>
-                  <NavItem>
-                    <Button bsStyle="primary" className="btn-margin" onClick={this.logout.bind(this)}>
-                      Log Out
-                    </Button>
-                  </NavItem>
-                </Nav>
-              </Navbar>
+              <PageHeader>
+                <Grid>
+                  <Row className="show-grid">
+                    <Col md={7}>potic</Col>
+                    <Col md={3}>
+                      <small><Profile {...this.props} /></small>
+                    </Col>
+                    <Col md={2}>
+                      <Button bsStyle="primary" className="btn-margin" onClick={this.logout.bind(this)}>
+                        Log Out
+                      </Button>
+                    </Col>
+                  </Row>
+                </Grid>
+              </PageHeader>
 
               <MuiThemeProvider>
                 <PocketSquareGrid {...this.props} />
