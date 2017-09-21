@@ -249,7 +249,7 @@ class PocketSquareGrid extends React.Component {
         {Array(this.state.sections.length).fill().map((_, i) => (
           <PocketSquareSection
             fetchCardData={(s, b) => this.fetchCardData(i, s, b) }
-            markCardAsRead={this.markCardAsRead }
+            markCardAsRead={(id) => this.markCardAsRead(id, i) }
             section={this.state.sections[i]}
             blacklistedCards={this.state.blacklistedCards}
             focusCardId={ i === this.state.sectionInd ? this.state.focusCardId : ""} />
@@ -294,7 +294,7 @@ class PocketSquareSection extends React.Component {
                    this.cardNode = node;
                  }
                }}
-               onMarkAsRead={(id) => this.props.markCardAsRead(id, i)}/>))}
+               onMarkAsRead={this.props.markCardAsRead}/>))}
          </div>
        </div>
     );
