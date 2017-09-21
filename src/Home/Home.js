@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Grid, Row, Col, Button, PageHeader } from 'react-bootstrap';
 import AlertContainer from 'react-alert'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -10,10 +9,9 @@ import {GridList, GridTile} from 'material-ui/GridList';
 import Subheader from 'material-ui/Subheader';
 import IconButton from 'material-ui/IconButton';
 import StarBorder from 'material-ui/svg-icons/toggle/star-border';
-import Profile from '../Profile/Profile';
+import PoticBar from '../PoticBar/PoticBar';
 import config from 'config';
 import axios from 'axios';
-import './Home.css';
 
 class Home extends Component {
 
@@ -27,38 +25,17 @@ class Home extends Component {
 
   render() {
     const { isAuthenticated } = this.props.auth;
+
     return (
       <div className="container-fluid">
-        <PageHeader>
-          <Grid>
-            <Row className="show-grid">
-              <Col md={7}>potic</Col>
-              <Col md={3}>
-                {
-                  isAuthenticated() && (
-                    <small><Profile {...this.props} /></small>
-                  )
-                }
-              </Col>
-              <Col md={2}>
-                {
-                  isAuthenticated() && (
-                    <Button bsStyle="primary" className="btn-margin" onClick={this.logout.bind(this)}>
-                      Log Out
-                    </Button>
-                  )
-                }
-                {
-                  !isAuthenticated() && (
-                    <Button bsStyle="primary" className="btn-margin" onClick={this.login.bind(this)}>
-                      Log In
-                    </Button>
-                  )
-                }
-              </Col>
-            </Row>
-          </Grid>
-        </PageHeader>
+        <MuiThemeProvider>
+          <PoticBar
+            isAuthenticated={() => this.props.auth.isAuthenticated()}
+            login={() => this.props.auth.login()}
+            logout={() => this.props.auth.logout()}
+            userProfile={this.props.auth}
+            getProfile={(cb) => this.props.auth.getProfile(cb)} />
+        </MuiThemeProvider>
 
         {
           isAuthenticated() && (
