@@ -29,44 +29,43 @@ class Home extends Component {
     const { isAuthenticated } = this.props.auth;
     return (
       <div className="container-fluid">
+        <PageHeader>
+          <Grid>
+            <Row className="show-grid">
+              <Col md={7}>potic</Col>
+              <Col md={3}>
+                {
+                  isAuthenticated() && (
+                    <small><Profile {...this.props} /></small>
+                  )
+                }
+              </Col>
+              <Col md={2}>
+                {
+                  isAuthenticated() && (
+                    <Button bsStyle="primary" className="btn-margin" onClick={this.logout.bind(this)}>
+                      Log Out
+                    </Button>
+                  )
+                }
+                {
+                  !isAuthenticated() && (
+                    <Button bsStyle="primary" className="btn-margin" onClick={this.login.bind(this)}>
+                      Log In
+                    </Button>
+                  )
+                }
+              </Col>
+            </Row>
+          </Grid>
+        </PageHeader>
+
         {
           isAuthenticated() && (
-            <div>
-              <PageHeader>
-                <Grid>
-                  <Row className="show-grid">
-                    <Col md={7}>potic</Col>
-                    <Col md={3}>
-                      <small><Profile {...this.props} /></small>
-                    </Col>
-                    <Col md={2}>
-                      <Button bsStyle="primary" className="btn-margin" onClick={this.logout.bind(this)}>
-                        Log Out
-                      </Button>
-                    </Col>
-                  </Row>
-                </Grid>
-              </PageHeader>
-
-              <MuiThemeProvider>
-                <PocketSquareGrid {...this.props} />
-              </MuiThemeProvider>
-            </div>
+            <MuiThemeProvider>
+              <PocketSquareGrid {...this.props} />
+            </MuiThemeProvider>
           )
-        }
-        {
-          !isAuthenticated() && (
-              <h4>
-                You are not logged in! Press{' '}
-                <a
-                  style={{ cursor: 'pointer' }}
-                  onClick={this.login.bind(this)}
-                >
-                  Log In
-                </a>
-                {' '}to continue.
-              </h4>
-            )
         }
       </div>
     );
