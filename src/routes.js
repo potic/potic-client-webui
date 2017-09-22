@@ -1,7 +1,6 @@
 import React from 'react';
 import { Redirect, Route, BrowserRouter } from 'react-router-dom';
-import Home from './Home/Home';
-import Profile from './Profile/Profile';
+import PoticHome from './PoticHome/PoticHome';
 import Callback from './Callback/Callback';
 import Auth from './Auth/Auth';
 import history from './history';
@@ -16,16 +15,9 @@ const handleAuthentication = (nextState, replace) => {
 
 export const makeMainRoutes = () => {
   return (
-      <BrowserRouter history={history} component={Home}>
+      <BrowserRouter history={history} component={PoticHome}>
         <div>
-          <Route path="/" render={(props) => <Home auth={auth} {...props} />} />
-          <Route path="/profile" render={(props) => (
-            !auth.isAuthenticated() ? (
-              <Redirect to="/"/>
-            ) : (
-              <Profile auth={auth} {...props} />
-            )
-          )} />
+          <Route path="/" render={(props) => <PoticHome auth={auth} {...props} />} />
           <Route path="/callback" render={(props) => {
             handleAuthentication(props);
             return <Callback {...props} />
