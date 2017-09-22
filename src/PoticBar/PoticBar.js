@@ -3,6 +3,7 @@ import Avatar from 'material-ui/Avatar';
 import AppBar from 'material-ui/AppBar';
 import FlatButton from 'material-ui/FlatButton';
 import FontIcon from 'material-ui/FontIcon';
+import config from 'config';
 
 class PoticBar extends Component {
 
@@ -26,7 +27,7 @@ class PoticBar extends Component {
     const { profile } = this.state;
     const { isAuthenticated } = this.props;
 
-    const title = `potic${isAuthenticated() ? ' of ' + profile.name : ''}`
+    const title = `${config.title}${isAuthenticated() ? ' for ' + profile.name : ''}`
 
     return (
       <AppBar
