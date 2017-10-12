@@ -40,9 +40,9 @@ class PoticCard extends React.Component {
       <Card style={styles.card} >
         <div style={styles.cardInner}>
           <CardMedia style={styles.media}>
-            <img src={this.props.post.mainImage ? this.props.post.mainImage.src  : null} />
+            <img src={this.props.post.image ? this.props.post.image.src : null} />
           </CardMedia>
-          <a href={this.props.post.resolvedUrl} style={styles.link} target="_blank">
+          <a href={this.props.post.url} style={styles.link} target="_blank">
             <CardTitle title={this.props.post.title} subtitle={this.props.post.source} titleStyle={styles.title} />
           </a>
           <CardText>
