@@ -55,7 +55,7 @@ class PoticSection extends React.Component {
            </div>
          </div>
          <div style={styles.gridList} ref={(node) => {this.cardContainer = node;}}>
-           {this.props.section['firstChunk']['articles']
+           {this.props.section['firstChunk']['cards']
              .filter((post) => {return this.props.blacklistedCards.indexOf(post.id) < 0;})
              .map((post) => (<PoticCard
                post={post}
