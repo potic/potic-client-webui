@@ -97,11 +97,11 @@ class PoticGrid extends React.Component {
         const sections = res.data;
         console.log(res);
 
-        this.state.sections[ind]['firstChunk']['articles'].push.apply(this.state.sections[ind]['firstChunk']['articles'], sections['articles']);
+        this.state.sections[ind]['firstChunk']['cards'].push.apply(this.state.sections[ind]['firstChunk']['cards'], sections['cards']);
         this.state.sections[ind]['firstChunk']['nextCursorId'] = sections['nextCursorId'];
 
         this.setState({
-          focusCardId: shouldFocus ? sections['articles'][sections['articles'].length - 1]['id'] : "",
+          focusCardId: shouldFocus ? sections['cards'][sections['cards'].length - 1]['id'] : "",
           sectionInd: ind,
           sections: this.state.sections,
           size: this.state.size,
