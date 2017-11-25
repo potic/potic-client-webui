@@ -101,12 +101,13 @@ export default class Auth {
     this.auth0.renewAuth(
       {
         audience: config.auth0_audience,
-        redirectUri: config.auth0_callbackUrl,
-        usePostMessage: true
+        redirectUri: config.auth0_tokenRenewerUrl,
+        usePostMessage: true,
+        postMessageDataType: 'auth0:silent-authentication'
       },
       (err, result) => {
         if (err) {
-          console.log(err);
+          console.log(`Could not get a new token using silent authentication (${err.error}).`);
         } else {
           this.setSession(result);
         }

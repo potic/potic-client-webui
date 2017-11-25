@@ -22,9 +22,6 @@ export const makeMainRoutes = () => {
             handleAuthentication(props);
             return <Callback {...props} />
           }} />
-          <Route path="/renew" render={(props) => {
-            <Redirect to="/renew.html"/>
-          }} />
         </div>
       </BrowserRouter>
   );
