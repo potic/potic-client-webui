@@ -102,8 +102,7 @@ export default class Auth {
       {
         audience: config.auth0_audience,
         redirectUri: config.auth0_tokenRenewerUrl,
-        usePostMessage: true,
-        postMessageDataType: 'auth0:silent-authentication'
+        usePostMessage: true
       },
       (err, result) => {
         if (err) {
