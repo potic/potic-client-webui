@@ -107,8 +107,9 @@ export default class Auth {
       },
       (err, result) => {
         if (err) {
-          console.log(`Could not get a new token using silent authentication (${err.error}).`);
+          console.log(`Could not get a new token using silent authentication (${err.error}): ${err}`);
         } else {
+          console.log(`Successfully renewed token: ${result}`);
           this.setSession(result);
         }
       }
@@ -117,8 +118,10 @@ export default class Auth {
 
   scheduleRenewal() {
     const expiresAt = JSON.parse(localStorage.getItem('expires_at'));
-    const delay = (expiresAt - Date.now()) / 3;
+    //const delay = (expiresAt - Date.now()) / 3;
+    const delay = 60 * 1000;
     if (delay > 0) {
+      console.log(`Scheduled token renewal in ${delay}ms`);
       this.tokenRenewalTimeout = setTimeout(() => {
         this.renewToken();
       },
