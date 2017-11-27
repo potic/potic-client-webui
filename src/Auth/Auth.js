@@ -102,7 +102,8 @@ export default class Auth {
       {
         audience: config.auth0_audience,
         redirectUri: config.auth0_tokenRenewerUrl,
-        usePostMessage: true
+        usePostMessage: true,
+        postMessageOrigin: config.auth0_tokenRenewerUrl
       },
       (err, result) => {
         if (err) {
