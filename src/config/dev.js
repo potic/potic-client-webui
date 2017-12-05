@@ -8,7 +8,7 @@ let config = {
 
   title: 'potic.dev',
 
-  services_aggregator: 'http://localhost:40401',
+  services_sections: 'http://localhost:40401',
   services_articles: 'http://localhost:40402',
 
   auth0_callbackUrl: 'http://localhost:8000/callback',

@@ -57,7 +57,7 @@ class PoticGrid extends React.Component {
     const { getAccessToken } = this.props.auth;
     const headers = { 'Authorization': `Bearer ${getAccessToken()}`}
 
-    axios.get(`${config.services_aggregator}/user/me/section`, { headers })
+    axios.get(`${config.services_sections}/user/me/section`, { headers })
       .then(res => {
         const sections = res.data;
         console.log(res);
@@ -92,7 +92,7 @@ class PoticGrid extends React.Component {
     const { getAccessToken } = this.props.auth;
     const headers = { 'Authorization': `Bearer ${getAccessToken()}`}
 
-    axios.get(`${config.services_aggregator}/user/me/section/${this.state.sections[ind]['id']}?cursorId=${this.state.sections[ind]['firstChunk']['nextCursorId']}&count=${count}`, { headers })
+    axios.get(`${config.services_sections}/user/me/section/${this.state.sections[ind]['id']}?cursorId=${this.state.sections[ind]['firstChunk']['nextCursorId']}&count=${count}`, { headers })
       .then(res => {
         const sections = res.data;
         console.log(res);

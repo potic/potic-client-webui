@@ -8,7 +8,7 @@ let config = {
 
   title: 'potic.x',
 
-  services_aggregator: 'http://185.14.185.186:40401',
+  services_sections: 'http://185.14.185.186:40401',
   services_articles: 'http://185.14.185.186:40402',
 
   auth0_callbackUrl: 'http://185.14.185.186/callback',
