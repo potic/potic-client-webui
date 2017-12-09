@@ -103,25 +103,25 @@ class PoticGrid extends React.Component {
         const cards = res.data;
         console.log(`fetched cards ${JSON.stringify(cards)} for section ${JSON.stringify(this.state.sections[sectionIndex])}`);
 
-        this.state.sections[ind]['firstChunk']['cards'].push.apply(this.state.sections[ind]['firstChunk']['cards'], sections['cards']);
-        this.state.sections[ind]['firstChunk']['nextCursorId'] = sections['nextCursorId'];
+        this.state.sections[sectionIndex]['cards'].push.apply(this.state.sections[sectionIndex]['cards'], cards);
 
         this.setState({
-          focusCardId: shouldFocus ? sections['cards'][sections['cards'].length - 1]['id'] : "",
-          sectionInd: ind,
+          focusCardId: shouldFocus ? cards[cards.length - 1]['id'] : "",
+          sectionInd: sectionIndex,
           sections: this.state.sections,
           size: this.state.size,
           nextPage: this.state.nextPage,
-          blacklistedCards: this.state.blacklistedCards});
+          blacklistedCards: this.state.blacklistedCards
+        });
       })
       .catch(function (error) {
-        console.log(error);
-        message.error('Can\'t get cards: ' + error)
+        console.log(`fetching cards for section ${JSON.stringify(this.state.sections[sectionIndex])} failed: ${error}`);
+        message.error(`Can't get cards for section: ${error}`)
       });
   }
 
   markCardAsRead(id, section_ind) {
-    console.log('MARK CARD AS READ');
+    console.log(`marking cards #${id} from section ${JSON.stringify(this.state.sections[section_ind])} as read...`);
 
     const { getAccessToken } = this.props.auth;
     const headers = { 'Authorization': `Bearer ${getAccessToken()}`}
@@ -138,8 +138,8 @@ class PoticGrid extends React.Component {
         this.fetchCards(section_ind, 1, false);
       })
       .catch(function (error) {
-        console.log(error);
-        message.error('Can\'t mark card as read: ' + error)
+        console.log(`marking cards #${id} from section ${JSON.stringify(this.state.sections[section_ind])} as read failed: ${error}`);
+        message.error(`Can't mark card as read: ${error}`)
       });
   }
 }

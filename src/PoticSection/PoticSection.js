@@ -51,7 +51,7 @@ class PoticSection extends React.Component {
            <Subheader style={styles.subheader}>{this.props.section['title']}</Subheader>
            <div style={styles.scrollContainer}>
              <FlatButton label="<" style={styles.scrollLeft} onClick={() => {}}/>
-             <FlatButton label=">" style={styles.scrollRight} onClick={() => {this.props.fetchCardData(5, true)}}/>
+             <FlatButton label=">" style={styles.scrollRight} onClick={() => {this.props.fetchCards(5, true)}}/>
            </div>
          </div>
          <div style={styles.gridList} ref={(node) => {this.cardContainer = node;}}>
