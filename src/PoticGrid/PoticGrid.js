@@ -19,103 +19,15 @@ class PoticGrid extends React.Component {
 
     this.state = {
       sections: [],
-      blacklistedCards: [],
-      nextPage: 0,
-      size: 12,
+      markedAsReadCards: []
     };
 
-    this.fetchCardData = this.fetchCardData.bind(this);
+    this.fetchCards = this.fetchCards.bind(this);
     this.markCardAsRead = this.markCardAsRead.bind(this);
   }
 
-  markCardAsRead(id, section_ind) {
-    console.log('MARK CARD AS READ');
-
-    const { getAccessToken } = this.props.auth;
-    const headers = { 'Authorization': `Bearer ${getAccessToken()}`}
-
-    axios.post(`${config.services_articles}/user/me/article/${id}/markAsRead`, {}, { headers })
-      .then(res => {
-        this.setState({
-          focusCardId: "",
-          sectionInd: "",
-          sections: this.state.sections,
-          size: this.state.size,
-          nextPage: this.state.nextPage,
-          blacklistedCards: this.state.blacklistedCards.concat([id])});
-        this.fetchCardData(section_ind, 1, false);
-      })
-      .catch(function (error) {
-        console.log(error);
-        message.error('Can\'t mark card as read: ' + error)
-      });
-  }
-
-  fetchData() {
-    console.log('START FETCH FOR PAGE '+ this.state.nextPage);
-
-    const { getAccessToken } = this.props.auth;
-    const headers = { 'Authorization': `Bearer ${getAccessToken()}`}
-
-    axios.get(`${config.services_sections}/user/me/section`, { headers })
-      .then(res => {
-        const sections = res.data;
-        console.log(res);
-        if (this.state.nextPage == 0) {
-          this.setState({
-            focusCardId: "",
-            sectionInd: "",
-            sections: sections,
-            size: this.state.size,
-            nextPage: 1,
-            blacklistedCards: this.state.blacklistedCards });
-        } else {
-          this.setState({
-            focusCardId: "",
-            sectionInd: "",
-            sections: this.state.sections.concat(sections),
-            size: this.state.size,
-            nextPage: this.state.nextPage + 1,
-            blacklistedCards: this.state.blacklistedCards });
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-        message.error('Can\'t get cards: ' + error)
-      });
-  }
-
-  fetchCardData(ind, count, shouldFocus) {
-    console.log('fetch card data');
-    console.log(ind);
-
-    const { getAccessToken } = this.props.auth;
-    const headers = { 'Authorization': `Bearer ${getAccessToken()}`}
-
-    axios.get(`${config.services_sections}/user/me/section/${this.state.sections[ind]['id']}?cursorId=${this.state.sections[ind]['firstChunk']['nextCursorId']}&count=${count}`, { headers })
-      .then(res => {
-        const sections = res.data;
-        console.log(res);
-
-        this.state.sections[ind]['firstChunk']['cards'].push.apply(this.state.sections[ind]['firstChunk']['cards'], sections['cards']);
-        this.state.sections[ind]['firstChunk']['nextCursorId'] = sections['nextCursorId'];
-
-        this.setState({
-          focusCardId: shouldFocus ? sections['cards'][sections['cards'].length - 1]['id'] : "",
-          sectionInd: ind,
-          sections: this.state.sections,
-          size: this.state.size,
-          nextPage: this.state.nextPage,
-          blacklistedCards: this.state.blacklistedCards});
-      })
-      .catch(function (error) {
-        console.log(error);
-        message.error('Can\'t get cards: ' + error)
-      });
-  }
-
   componentDidMount() {
-    this.fetchData();
+    this.fetchSections();
     window.addEventListener("scroll", this.handleScroll);
   }
 
@@ -128,16 +40,97 @@ class PoticGrid extends React.Component {
       <div>
         <AlertContainer ref={(msg) => global.message = msg} {...this.alertOptions} />
 
-        {Array(this.state.sections.length).fill().map((_, i) => (
+        {Array(this.state.sections.length).fill().map((_, sectionIndex) => (
           <PoticSection
-            fetchCardData={(s, b) => this.fetchCardData(i, s, b) }
-            markCardAsRead={(id) => this.markCardAsRead(id, i) }
-            section={this.state.sections[i]}
-            blacklistedCards={this.state.blacklistedCards}
-            focusCardId={ i === this.state.sectionInd ? this.state.focusCardId : ""} />
+            fetchCards={(count, shouldFocus) => this.fetchCards(sectionIndex, count, shouldFocus) }
+            markCardAsRead={(cardId) => this.markCardAsRead(cardId, sectionIndex) }
+            section={this.state.sections[sectionIndex]}
+            markedAsReadCards={this.state.markedAsReadCards}
+            focusCardId={ sectionIndex === this.state.focusSectionIndex ? this.state.focusCardId : ""} />
          ))}
       </div>
     );
+  }
+
+  fetchSections() {
+    console.log('fetching sections...');
+
+    const { getAccessToken } = this.props.auth;
+    const headers = { 'Authorization': `Bearer ${getAccessToken()}`}
+
+    axios.get(`${config.services_sections}/section`, { headers })
+      .then(res => {
+        const sections = res.data;
+        console.log(`fetched sections ${JSON.stringify(sections)}`);
+
+        sections.forEach(section => { section['cards'] = []; });
+
+        this.setState({
+          focusCardId: "",
+          focusSectionIndex: "",
+          sections: sections,
+          markedAsReadCards: this.state.markedAsReadCards
+        });
+
+        Array(this.state.sections.length).fill().map((_, sectionIndex) => {
+            console.log(`fetching head of section ${this.state.sections[sectionIndex].id}`);
+            this.fetchCards(sectionIndex, 5, false);
+        });
+      })
+      .catch(function (error) {
+        console.log(`fetching sections failed: ${error}`);
+        message.error(`Can't get sections: ${error}`)
+      });
+  }
+
+  fetchCards(sectionIndex, count, shouldFocus) {
+    console.log(`fetching ${count} cards for section ${this.state.sections[sectionIndex].id}, should_focus=${shouldFocus}...`);
+
+    const { getAccessToken } = this.props.auth;
+
+    axios({
+        method: 'post',
+        url: `${config.services_sections}/section/${this.state.sections[sectionIndex]['id']}`,
+        headers: { 'Authorization': `Bearer ${getAccessToken()}`},
+        data: { count: count, skipIds: this.state.sections[sectionIndex]['cards'].map(card => card.id) }
+    }).then(res => {
+        const cards = res.data;
+        console.log(`fetched cards ${JSON.stringify(cards)} for section ${this.state.sections[sectionIndex].id}`);
+
+        this.state.sections[sectionIndex]['cards'].push.apply(this.state.sections[sectionIndex]['cards'], cards);
+
+        this.setState({
+          focusCardId: shouldFocus ? cards[cards.length - 1]['id'] : "",
+          focusSectionIndex: sectionIndex,
+          sections: this.state.sections,
+          markedAsReadCards: this.state.markedAsReadCards
+        });
+      })
+      .catch(function (error) {
+        console.log(`fetching cards for section ${this.state.sections[sectionIndex].id} failed: ${error}`);
+        message.error(`Can't get cards for section: ${error}`)
+      });
+  }
+
+  markCardAsRead(id, sectionIndex) {
+    console.log(`marking cards #${id} from section ${this.state.sections[sectionIndex].id} as read...`);
+
+    const { getAccessToken } = this.props.auth;
+    const headers = { 'Authorization': `Bearer ${getAccessToken()}`}
+
+    axios.post(`${config.services_articles}/user/me/article/${id}/markAsRead`, {}, { headers })
+      .then(res => {
+        this.setState({
+          focusCardId: "",
+          focusSectionIndex: "",
+          sections: this.state.sections,
+          markedAsReadCards: this.state.markedAsReadCards.concat([id])});
+        this.fetchCards(sectionIndex, 1, false);
+      })
+      .catch(function (error) {
+        console.log(`marking cards #${id} from section ${this.state.sections[sectionIndex].id} as read failed: ${error}`);
+        message.error(`Can't mark card as read: ${error}`)
+      });
   }
 }
 
