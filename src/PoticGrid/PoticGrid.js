@@ -19,9 +19,7 @@ class PoticGrid extends React.Component {
 
     this.state = {
       sections: [],
-      blacklistedCards: [],
-      nextPage: 0,
-      size: 12,
+      markedAsReadCards: []
     };
 
     this.fetchCards = this.fetchCards.bind(this);
@@ -42,13 +40,13 @@ class PoticGrid extends React.Component {
       <div>
         <AlertContainer ref={(msg) => global.message = msg} {...this.alertOptions} />
 
-        {Array(this.state.sections.length).fill().map((_, i) => (
+        {Array(this.state.sections.length).fill().map((_, sectionIndex) => (
           <PoticSection
-            fetchCards={(s, b) => this.fetchCards(i, s, b) }
-            markCardAsRead={(id) => this.markCardAsRead(id, i) }
-            section={this.state.sections[i]}
-            blacklistedCards={this.state.blacklistedCards}
-            focusCardId={ i === this.state.sectionInd ? this.state.focusCardId : ""} />
+            fetchCards={(count, shouldFocus) => this.fetchCards(sectionIndex, count, shouldFocus) }
+            markCardAsRead={(cardId) => this.markCardAsRead(cardId, sectionIndex) }
+            section={this.state.sections[sectionIndex]}
+            markedAsReadCards={this.state.markedAsReadCards}
+            focusCardId={ sectionIndex === this.state.focusSectionIndex ? this.state.focusCardId : ""} />
          ))}
       </div>
     );
@@ -65,21 +63,17 @@ class PoticGrid extends React.Component {
         const sections = res.data;
         console.log(`fetched sections ${JSON.stringify(sections)}`);
 
-        sections.forEach(section => {
-            section['cards'] = [];
-        });
+        sections.forEach(section => { section['cards'] = []; });
 
         this.setState({
           focusCardId: "",
-          sectionInd: "",
+          focusSectionIndex: "",
           sections: sections,
-          size: this.state.size,
-          nextPage: 1,
-          blacklistedCards: this.state.blacklistedCards
+          markedAsReadCards: this.state.markedAsReadCards
         });
 
         Array(this.state.sections.length).fill().map((_, sectionIndex) => {
-            console.log(`fetching head of section ${JSON.stringify(this.state.sections[sectionIndex])}`);
+            console.log(`fetching head of section ${this.state.sections[sectionIndex].id}`);
             this.fetchCards(sectionIndex, 5, false);
         });
       })
@@ -90,7 +84,7 @@ class PoticGrid extends React.Component {
   }
 
   fetchCards(sectionIndex, count, shouldFocus) {
-    console.log(`fetching ${count} cards for section ${JSON.stringify(this.state.sections[sectionIndex])}, should_focus=${shouldFocus}...`);
+    console.log(`fetching ${count} cards for section ${this.state.sections[sectionIndex].id}, should_focus=${shouldFocus}...`);
 
     const { getAccessToken } = this.props.auth;
 
@@ -101,27 +95,25 @@ class PoticGrid extends React.Component {
         data: { count: count, skipIds: this.state.sections[sectionIndex]['cards'].map(card => card.id) }
     }).then(res => {
         const cards = res.data;
-        console.log(`fetched cards ${JSON.stringify(cards)} for section ${JSON.stringify(this.state.sections[sectionIndex])}`);
+        console.log(`fetched cards ${JSON.stringify(cards)} for section ${this.state.sections[sectionIndex].id}`);
 
         this.state.sections[sectionIndex]['cards'].push.apply(this.state.sections[sectionIndex]['cards'], cards);
 
         this.setState({
           focusCardId: shouldFocus ? cards[cards.length - 1]['id'] : "",
-          sectionInd: sectionIndex,
+          focusSectionIndex: sectionIndex,
           sections: this.state.sections,
-          size: this.state.size,
-          nextPage: this.state.nextPage,
-          blacklistedCards: this.state.blacklistedCards
+          markedAsReadCards: this.state.markedAsReadCards
         });
       })
       .catch(function (error) {
-        console.log(`fetching cards for section ${JSON.stringify(this.state.sections[sectionIndex])} failed: ${error}`);
+        console.log(`fetching cards for section ${this.state.sections[sectionIndex].id} failed: ${error}`);
         message.error(`Can't get cards for section: ${error}`)
       });
   }
 
-  markCardAsRead(id, section_ind) {
-    console.log(`marking cards #${id} from section ${JSON.stringify(this.state.sections[section_ind])} as read...`);
+  markCardAsRead(id, sectionIndex) {
+    console.log(`marking cards #${id} from section ${this.state.sections[sectionIndex].id} as read...`);
 
     const { getAccessToken } = this.props.auth;
     const headers = { 'Authorization': `Bearer ${getAccessToken()}`}
@@ -130,15 +122,13 @@ class PoticGrid extends React.Component {
       .then(res => {
         this.setState({
           focusCardId: "",
-          sectionInd: "",
+          focusSectionIndex: "",
           sections: this.state.sections,
-          size: this.state.size,
-          nextPage: this.state.nextPage,
-          blacklistedCards: this.state.blacklistedCards.concat([id])});
-        this.fetchCards(section_ind, 1, false);
+          markedAsReadCards: this.state.markedAsReadCards.concat([id])});
+        this.fetchCards(sectionIndex, 1, false);
       })
       .catch(function (error) {
-        console.log(`marking cards #${id} from section ${JSON.stringify(this.state.sections[section_ind])} as read failed: ${error}`);
+        console.log(`marking cards #${id} from section ${this.state.sections[sectionIndex].id} as read failed: ${error}`);
         message.error(`Can't mark card as read: ${error}`)
       });
   }

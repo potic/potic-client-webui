@@ -50,13 +50,12 @@ class PoticSection extends React.Component {
          <div style={styles.subheaderContainer}>
            <Subheader style={styles.subheader}>{this.props.section['title']}</Subheader>
            <div style={styles.scrollContainer}>
-             <FlatButton label="<" style={styles.scrollLeft} onClick={() => {}}/>
              <FlatButton label=">" style={styles.scrollRight} onClick={() => {this.props.fetchCards(5, true)}}/>
            </div>
          </div>
          <div style={styles.gridList} ref={(node) => {this.cardContainer = node;}}>
            {this.props.section['cards']
-             .filter((post) => {return this.props.blacklistedCards.indexOf(post.id) < 0;})
+             .filter((post) => {return this.props.markedAsReadCards.indexOf(post.id) < 0;})
              .map((post) => (<PoticCard
                post={post}
                key={post.id}
