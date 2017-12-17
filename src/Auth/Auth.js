@@ -108,6 +108,7 @@ export default class Auth {
       (err, result) => {
         if (err) {
           console.log(`Could not get a new token using silent authentication: ${err.error}`);
+          this.login();
         } else {
           this.setSession(result);
         }
