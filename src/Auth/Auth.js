@@ -54,9 +54,6 @@ export default class Auth {
 
     // schedule a token renewal
     this.scheduleRenewal();
-
-    // navigate to the home route
-    history.replace('/');
   }
 
   logout() {
@@ -118,14 +115,13 @@ export default class Auth {
 
   scheduleRenewal() {
     const expiresAt = JSON.parse(localStorage.getItem('expires_at'));
-    const delay = (expiresAt - Date.now()) / 3;
-    if (delay > 0) {
+    const tokenLifetime = expiresAt - Date.now();
+    if (tokenLifetime > 0) {
+      const delay = tokenLifetime / 10;
       console.log(`Scheduled token renewal in ${delay}ms`);
-      this.tokenRenewalTimeout = setTimeout(() => {
-        this.renewToken();
-      },
-      delay
-    );
+      this.tokenRenewalTimeout = setTimeout(() => { this.renewToken(); }, delay);
+    } else {
+      this.login();
     }
   }
 }
