@@ -8,7 +8,9 @@ export default class Auth {
 
   tokenRenewalTimeout;
 
-  constructor() {
+  log;
+
+  constructor(log) {
     this.auth0 = new auth0.WebAuth({
       domain: config.auth0_domain,
       clientID: config.auth0_clientId,
@@ -17,6 +19,8 @@ export default class Auth {
       responseType: config.auth0_response,
       scope: config.auth0_scope
     });
+
+    this.log = log;
 
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
@@ -40,7 +44,7 @@ export default class Auth {
       } else if (err) {
         history.replace('/');
         console.log(err);
-        alert(`Error: ${err.error}. Check the console for further details.`);
+        this.log.send('ERROR', 'potic.web.Auth', `authentication failed: ${err.error}.`);
       }
     });
   }
@@ -104,7 +108,7 @@ export default class Auth {
       },
       (err, result) => {
         if (err) {
-          console.log(`Could not get a new token using silent authentication: ${err.error}`);
+          this.log.send('ERROR', 'potic.web.Auth', `Could not get a new token using silent authentication: ${err.error}`);
           this.login();
         } else {
           this.setSession(result);
@@ -118,7 +122,7 @@ export default class Auth {
     const tokenLifetime = expiresAt - Date.now();
     if (tokenLifetime > 0) {
       const delay = tokenLifetime / 10;
-      console.log(`Scheduled token renewal in ${delay}ms`);
+      this.log.send('INFO', 'potic.web.Auth', `Scheduled token renewal in ${delay}ms`);
       this.tokenRenewalTimeout = setTimeout(() => { this.renewToken(); }, delay);
     } else {
       this.login();

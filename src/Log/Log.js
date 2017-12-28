@@ -7,6 +7,7 @@ export default class Log {
     axios({
         method: 'post',
         url: config.services_logger,
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('access_token')}`},
         data: { service: config.services_self, env: config.env, logger: logger, loglevel: loglevel, message: message }
     }).then(res => {
         if (config.env != 'prod') {

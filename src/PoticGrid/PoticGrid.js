@@ -53,7 +53,7 @@ class PoticGrid extends React.Component {
   }
 
   fetchSections() {
-    this.props.log.send('INFO', 'PoticGrid', 'fetching sections...');
+    this.props.log.send('INFO', 'potic.web.PoticGrid', 'fetching sections...');
 
     const { getAccessToken } = this.props.auth;
     const headers = { 'Authorization': `Bearer ${getAccessToken()}`}
@@ -61,7 +61,7 @@ class PoticGrid extends React.Component {
     axios.get(`${config.services_sections}/section`, { headers })
       .then(res => {
         const sections = res.data;
-        this.props.log.send('DEBUG', 'PoticGrid', `fetched sections ${JSON.stringify(sections)}`);
+        this.props.log.send('DEBUG', 'potic.web.PoticGrid', `fetched sections ${JSON.stringify(sections)}`);
 
         sections.forEach(section => { section['cards'] = []; });
 
@@ -73,18 +73,18 @@ class PoticGrid extends React.Component {
         });
 
         Array(this.state.sections.length).fill().map((_, sectionIndex) => {
-            this.props.log.send('DEBUG', 'PoticGrid', `fetching head of section ${this.state.sections[sectionIndex].id}`);
+            this.props.log.send('DEBUG', 'potic.web.PoticGrid', `fetching head of section ${this.state.sections[sectionIndex].id}`);
             this.fetchCards(sectionIndex, 5, false);
         });
       })
       .catch(function (error) {
-        this.props.log.send('ERROR', 'PoticGrid', `fetching sections failed: ${error}`);
+        this.props.log.send('ERROR', 'potic.web.PoticGrid', `fetching sections failed: ${error}`);
         message.error(`Can't get sections: ${error}`)
       });
   }
 
   fetchCards(sectionIndex, count, shouldFocus) {
-    this.props.log.send('INFO', 'PoticGrid', `fetching ${count} cards for section ${this.state.sections[sectionIndex].id}, should_focus=${shouldFocus}...`);
+    this.props.log.send('INFO', 'potic.web.PoticGrid', `fetching ${count} cards for section ${this.state.sections[sectionIndex].id}, should_focus=${shouldFocus}...`);
 
     const { getAccessToken } = this.props.auth;
 
@@ -95,7 +95,7 @@ class PoticGrid extends React.Component {
         data: { count: count, skipIds: this.state.sections[sectionIndex]['cards'].map(card => card.id) }
     }).then(res => {
         const cards = res.data;
-        this.props.log.send('DEBUG', 'PoticGrid', `fetched cards ${JSON.stringify(cards)} for section ${this.state.sections[sectionIndex].id}`);
+        this.props.log.send('DEBUG', 'potic.web.PoticGrid', `fetched cards ${JSON.stringify(cards)} for section ${this.state.sections[sectionIndex].id}`);
 
         this.state.sections[sectionIndex]['cards'].push.apply(this.state.sections[sectionIndex]['cards'], cards);
 
@@ -107,13 +107,13 @@ class PoticGrid extends React.Component {
         });
       })
       .catch(function (error) {
-        this.props.log.send('ERROR', 'PoticGrid', `fetching cards for section ${this.state.sections[sectionIndex].id} failed: ${error}`);
+        this.props.log.send('ERROR', 'potic.web.PoticGrid', `fetching cards for section ${this.state.sections[sectionIndex].id} failed: ${error}`);
         message.error(`Can't get cards for section: ${error}`)
       });
   }
 
   markCardAsRead(id, sectionIndex) {
-    this.props.log.send('INFO', 'PoticGrid', `marking cards #${id} from section ${this.state.sections[sectionIndex].id} as read...`);
+    this.props.log.send('INFO', 'potic.web.PoticGrid', `marking cards #${id} from section ${this.state.sections[sectionIndex].id} as read...`);
 
     const { getAccessToken } = this.props.auth;
     const headers = { 'Authorization': `Bearer ${getAccessToken()}`}
@@ -128,7 +128,7 @@ class PoticGrid extends React.Component {
         this.fetchCards(sectionIndex, 1, false);
       })
       .catch(function (error) {
-        this.props.log.send('ERROR', 'PoticGrid', `marking cards #${id} from section ${this.state.sections[sectionIndex].id} as read failed: ${error}`);
+        this.props.log.send('ERROR', 'potic.web.PoticGrid', `marking cards #${id} from section ${this.state.sections[sectionIndex].id} as read failed: ${error}`);
         message.error(`Can't mark card as read: ${error}`)
       });
   }

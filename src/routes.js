@@ -6,8 +6,8 @@ import Auth from './Auth/Auth';
 import Log from './Log/Log';
 import history from './history';
 
-const auth = new Auth();
 const log = new Log();
+const auth = new Auth(log);
 
 const handleAuthentication = (nextState, replace) => {
   if (/access_token|id_token|error/.test(nextState.location.hash)) {
