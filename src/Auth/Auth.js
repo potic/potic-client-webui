@@ -44,7 +44,7 @@ export default class Auth {
       } else if (err) {
         history.replace('/');
         console.log(err);
-        this.log.send('ERROR', 'potic.web.Auth', `authentication failed: ${err.error}.`);
+        this.log.send('ERROR', 'me.potic.web.Auth', `authentication failed: ${err.error}.`);
       }
     });
   }
@@ -108,7 +108,7 @@ export default class Auth {
       },
       (err, result) => {
         if (err) {
-          this.log.send('ERROR', 'potic.web.Auth', `Could not get a new token using silent authentication: ${err.error}`);
+          this.log.send('ERROR', 'me.potic.web.Auth', `Could not get a new token using silent authentication: ${err.error}`);
           this.login();
         } else {
           this.setSession(result);
@@ -122,7 +122,7 @@ export default class Auth {
     const tokenLifetime = expiresAt - Date.now();
     if (tokenLifetime > 0) {
       const delay = tokenLifetime / 10;
-      this.log.send('INFO', 'potic.web.Auth', `Scheduled token renewal in ${delay}ms`);
+      this.log.send('INFO', 'me.potic.web.Auth', `Scheduled token renewal in ${delay}ms`);
       this.tokenRenewalTimeout = setTimeout(() => { this.renewToken(); }, delay);
     } else {
       this.login();
