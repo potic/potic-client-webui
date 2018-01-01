@@ -33,6 +33,7 @@ export default class Auth {
   }
 
   login() {
+    this.log.send('INFO', 'me.potic.web.Auth', `logging in...`);
     this.auth0.authorize();
   }
 
@@ -42,14 +43,15 @@ export default class Auth {
         this.setSession(authResult);
         history.replace('/');
       } else if (err) {
+        this.log.send('ERROR', 'me.potic.web.Auth', `authentication failed: ${err.error}`);
         history.replace('/');
-        console.log(err);
-        this.log.send('ERROR', 'me.potic.web.Auth', `authentication failed: ${err.error}.`);
       }
     });
   }
 
   setSession(authResult) {
+    this.log.send('DEBUG', 'me.potic.web.Auth', `saving session into local storage...`);
+
     // set the time that the access token will expire at
     let expiresAt = JSON.stringify((authResult.expiresIn * 1000) + new Date().getTime());
     localStorage.setItem('access_token', authResult.accessToken);
@@ -61,6 +63,8 @@ export default class Auth {
   }
 
   logout() {
+    this.log.send('INFO', 'me.potic.web.Auth', `logging out...`);
+
     // clear access token and ID token from local storage
     localStorage.removeItem('access_token');
     localStorage.removeItem('id_token');
@@ -89,6 +93,8 @@ export default class Auth {
   }
 
   getProfile(cb) {
+    this.log.send('INFO', 'me.potic.web.Auth', `getting user profile...`);
+
     let accessToken = this.getAccessToken();
     this.auth0.client.userInfo(accessToken, (err, profile) => {
       if (profile) {
@@ -99,6 +105,8 @@ export default class Auth {
   }
 
   renewToken() {
+    this.log.send('INFO', 'me.potic.web.Auth', `renewing token...`);
+
     this.auth0.renewAuth(
       {
         audience: config.auth0_audience,
@@ -120,6 +128,8 @@ export default class Auth {
   scheduleRenewal() {
     const expiresAt = JSON.parse(localStorage.getItem('expires_at'));
     const tokenLifetime = expiresAt - Date.now();
+    this.log.send('DEBUG', 'me.potic.web.Auth', `Token will expire in ${tokenLifetime}ms`);
+
     if (tokenLifetime > 0) {
       const delay = tokenLifetime / 10;
       this.log.send('INFO', 'me.potic.web.Auth', `Scheduled token renewal in ${delay}ms`);
