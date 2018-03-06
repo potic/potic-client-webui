@@ -50,7 +50,8 @@ class PoticCard extends React.Component {
           </CardText>
           <CardActions>
             <FlatButton label="@pocket" href={`https://getpocket.com/a/read/${this.props.post.pocketId}`} target="_blank" />
-            <FlatButton label="mark as read" onClick={() => this.props.onMarkAsRead(this.props.post.id)} />
+            <FlatButton label="read" onClick={() => this.props.onMarkAsRead(this.props.post.id)} />
+            <FlatButton label="archive" onClick={() => this.props.onMarkAsArchived(this.props.post.id)} />
           </CardActions>
         </div>
       </Card>

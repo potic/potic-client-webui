@@ -64,7 +64,9 @@ class PoticSection extends React.Component {
                    this.cardNode = node;
                  }
                }}
-               onMarkAsRead={this.props.markCardAsRead}/>))}
+               onMarkAsRead={this.props.markCardAsRead}
+               onMarkAsArchived={this.props.markCardAsArchived}
+               />))}
          </div>
        </div>
     );
