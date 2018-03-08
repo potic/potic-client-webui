@@ -56,11 +56,7 @@ class PoticCard extends React.Component {
             <FlatButton label="like" onClick={() => this.props.onMarkLiked(this.props.post.id)} />
             <FlatButton label="dislike" onClick={() => this.props.onMarkDisliked(this.props.post.id)} />
 
-            {
-              (this.props.post.pocketId != 0) && (
-                <FlatButton label="@pocket" href={`https://getpocket.com/a/read/${this.props.post.pocketId}`} />
-              )
-            }
+            <FlatButton label="@pocket" href={`https://getpocket.com/a/read/${this.props.post.pocketId}`} />
           </CardActions>
 
         </div>
