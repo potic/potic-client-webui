@@ -39,20 +39,30 @@ class PoticCard extends React.Component {
     return (
       <Card style={styles.card} >
         <div style={styles.cardInner}>
+
           <CardMedia style={styles.media}>
             <img src={this.props.post.image ? this.props.post.image.src : null} />
           </CardMedia>
+
           <a href={this.props.post.url} style={styles.link} target="_blank">
             <CardTitle title={this.props.post.title} subtitle={this.props.post.source} titleStyle={styles.title} />
           </a>
+
           <CardText>
             {this.props.post.excerpt}
           </CardText>
+
           <CardActions>
-            <FlatButton label="@pocket" href={`https://getpocket.com/a/read/${this.props.post.pocketId}`} target="_blank" />
-            <FlatButton label="read" onClick={() => this.props.onMarkAsRead(this.props.post.id)} />
-            <FlatButton label="archive" onClick={() => this.props.onMarkAsArchived(this.props.post.id)} />
+            <FlatButton label="like" onClick={() => this.props.onMarkLiked(this.props.post.id)} />
+            <FlatButton label="dislike" onClick={() => this.props.onMarkDisliked(this.props.post.id)} />
+
+            {
+              this.props.post.pocketId != 0 && (
+                <FlatButton label="@pocket" href={`https://getpocket.com/a/read/${this.props.post.pocketId}`}
+              )
+            }
           </CardActions>
+
         </div>
       </Card>
     );

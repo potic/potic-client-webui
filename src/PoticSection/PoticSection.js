@@ -55,7 +55,7 @@ class PoticSection extends React.Component {
          </div>
          <div style={styles.gridList} ref={(node) => {this.cardContainer = node;}}>
            {this.props.section['cards']
-             .filter((post) => {return this.props.markedAsReadCards.indexOf(post.id) < 0;})
+             .filter((post) => {return this.props.hiddenCards.indexOf(post.id) < 0;})
              .map((post) => (<PoticCard
                post={post}
                key={post.id}
@@ -64,8 +64,8 @@ class PoticSection extends React.Component {
                    this.cardNode = node;
                  }
                }}
-               onMarkAsRead={this.props.markCardAsRead}
-               onMarkAsArchived={this.props.markCardAsArchived}
+               onMarkLiked={this.props.markCardLiked}
+               onMarkDisliked={this.props.markCardDisliked}
                />))}
          </div>
        </div>

@@ -19,12 +19,12 @@ class PoticGrid extends React.Component {
 
     this.state = {
       sections: [],
-      markedAsReadCards: []
+      hiddenCards: []
     };
 
     this.fetchCards = this.fetchCards.bind(this);
-    this.markCardAsRead = this.markCardAsRead.bind(this);
-    this.markCardAsArchived = this.markCardAsArchived.bind(this);
+    this.markCardLiked = this.markCardLiked.bind(this);
+    this.markCardDisliked = this.markCardDisliked.bind(this);
   }
 
   componentDidMount() {
@@ -44,10 +44,10 @@ class PoticGrid extends React.Component {
         {Array(this.state.sections.length).fill().map((_, sectionIndex) => (
           <PoticSection
             fetchCards={(count, shouldFocus) => this.fetchCards(sectionIndex, count, shouldFocus) }
-            markCardAsRead={(cardId) => this.markCardAsRead(cardId, sectionIndex) }
-            markCardAsArchived={(cardId) => this.markCardAsArchived(cardId, sectionIndex) }
+            markCardLiked={(cardId) => this.markCardLiked(cardId, sectionIndex) }
+            markCardDisliked={(cardId) => this.markCardDisliked(cardId, sectionIndex) }
             section={this.state.sections[sectionIndex]}
-            markedAsReadCards={this.state.markedAsReadCards}
+            hiddenCards={this.state.hiddenCards}
             focusCardId={ sectionIndex === this.state.focusSectionIndex ? this.state.focusCardId : ""} />
          ))}
       </div>
@@ -71,7 +71,7 @@ class PoticGrid extends React.Component {
           focusCardId: "",
           focusSectionIndex: "",
           sections: sections,
-          markedAsReadCards: this.state.markedAsReadCards
+          hiddenCards: this.state.hiddenCards
         });
 
         Array(this.state.sections.length).fill().map((_, sectionIndex) => {
@@ -105,7 +105,7 @@ class PoticGrid extends React.Component {
           focusCardId: shouldFocus ? cards[cards.length - 1]['id'] : "",
           focusSectionIndex: sectionIndex,
           sections: this.state.sections,
-          markedAsReadCards: this.state.markedAsReadCards
+          hiddenCards: this.state.hiddenCards
         });
       })
       .catch(function (error) {
@@ -114,45 +114,45 @@ class PoticGrid extends React.Component {
       });
   }
 
-  markCardAsRead(id, sectionIndex) {
-    this.props.log.send('INFO', 'me.potic.web.PoticGrid', `marking cards #${id} from section ${this.state.sections[sectionIndex].id} as read...`);
+  markCardLiked(id, sectionIndex) {
+    this.props.log.send('INFO', 'me.potic.web.PoticGrid', `marking cards #${id} from section ${this.state.sections[sectionIndex].id} as liked...`);
 
     const { getAccessToken } = this.props.auth;
     const headers = { 'Authorization': `Bearer ${getAccessToken()}`}
 
-    axios.post(`${config.services_articles}/user/me/article/${id}/markAsRead`, {}, { headers })
+    axios.post(`${config.services_articles}/user/me/article/${id}/like`, {}, { headers })
       .then(res => {
         this.setState({
           focusCardId: "",
           focusSectionIndex: "",
           sections: this.state.sections,
-          markedAsReadCards: this.state.markedAsReadCards.concat([id])});
+          hiddenCards: this.state.hiddenCards.concat([id])});
         this.fetchCards(sectionIndex, 1, false);
       })
       .catch(function (error) {
-        this.props.log.send('ERROR', 'me.potic.web.PoticGrid', `marking cards #${id} from section ${this.state.sections[sectionIndex].id} as read failed: ${error}`);
-        message.error(`Can't mark card as read: ${error}`)
+        this.props.log.send('ERROR', 'me.potic.web.PoticGrid', `marking cards #${id} from section ${this.state.sections[sectionIndex].id} as liked failed: ${error}`);
+        message.error(`Can't mark card as liked: ${error}`)
       });
   }
 
-  markCardAsArchived(id, sectionIndex) {
-    this.props.log.send('INFO', 'me.potic.web.PoticGrid', `marking cards #${id} from section ${this.state.sections[sectionIndex].id} as archived...`);
+  markCardDisliked(id, sectionIndex) {
+    this.props.log.send('INFO', 'me.potic.web.PoticGrid', `marking cards #${id} from section ${this.state.sections[sectionIndex].id} as disliked...`);
 
     const { getAccessToken } = this.props.auth;
     const headers = { 'Authorization': `Bearer ${getAccessToken()}`}
 
-    axios.post(`${config.services_articles}/user/me/article/${id}/markAsArchived`, {}, { headers })
+    axios.post(`${config.services_articles}/user/me/article/${id}/dislike`, {}, { headers })
       .then(res => {
         this.setState({
           focusCardId: "",
           focusSectionIndex: "",
           sections: this.state.sections,
-          markedAsReadCards: this.state.markedAsReadCards.concat([id])});
+          hiddenCards: this.state.hiddenCards.concat([id])});
         this.fetchCards(sectionIndex, 1, false);
       })
       .catch(function (error) {
-        this.props.log.send('ERROR', 'me.potic.web.PoticGrid', `marking cards #${id} from section ${this.state.sections[sectionIndex].id} as archived failed: ${error}`);
-        message.error(`Can't mark card as archived: ${error}`)
+        this.props.log.send('ERROR', 'me.potic.web.PoticGrid', `marking cards #${id} from section ${this.state.sections[sectionIndex].id} as disliked failed: ${error}`);
+        message.error(`Can't mark card as disliked: ${error}`)
       });
   }
 }
