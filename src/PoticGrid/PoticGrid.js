@@ -118,10 +118,13 @@ class PoticGrid extends React.Component {
     this.props.log.send('INFO', 'me.potic.web.PoticGrid', `marking cards #${id} from section ${this.state.sections[sectionIndex].id} as liked...`);
 
     const { getAccessToken } = this.props.auth;
-    const headers = { 'Authorization': `Bearer ${getAccessToken()}`}
 
-    axios.post(`${config.services_articles}/user/me/article/${id}/like`, {}, { headers })
-      .then(res => {
+    axios({
+        method: 'post',
+        url: `${config.services_articles}/user/me/article/${id}/like`,
+        headers: { 'Authorization': `Bearer ${getAccessToken()}`},
+        data: { skipIds: this.state.sections[sectionIndex]['cards'].map(card => card.id) }
+    }).then(res => {
         this.setState({
           focusCardId: "",
           focusSectionIndex: "",
