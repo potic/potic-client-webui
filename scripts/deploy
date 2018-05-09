@@ -14,14 +14,17 @@ warn ( ) {
 warn "Currently running docker images"
 docker ps -a
 
-warn "Killing currently running docker image..."
-docker kill potic-client-webui; docker rm potic-client-webui
-
 warn "Pulling latest docker image..."
 docker pull potic/potic-client-webui:$TAG_TO_DEPLOY
 
+warn "Killing currently running docker image..."
+docker kill potic-client-webui; docker rm potic-client-webui
+
 warn "Starting docker image..."
 docker run -dit --restart on-failure --name potic-client-webui -e ENVIRONMENT_NAME=$ENVIRONMENT_NAME -p 80:8000 potic/potic-client-webui:$TAG_TO_DEPLOY
+
+warn "Wait 30sec to check status"
+sleep 30
 
 warn "Currently running docker images"
 docker ps -a

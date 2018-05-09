@@ -48,9 +48,13 @@ class PoticCard extends React.Component {
             <CardTitle title={this.props.post.title} subtitle={this.props.post.source} titleStyle={styles.title} />
           </a>
 
-          <CardText>
-            {this.props.post.excerpt}
-          </CardText>
+          {
+            (this.props.post.addedTimestamp != null) && (
+              <CardText>
+                Added {new Date(this.props.post.addedTimestamp * 1000).toLocaleDateString()}
+              </CardText>
+            )
+          }
 
           <CardActions>
             <FlatButton label="like" onClick={() => this.props.onMarkLiked(this.props.post.id)} />
