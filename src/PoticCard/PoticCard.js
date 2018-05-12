@@ -66,6 +66,9 @@ class PoticCard extends React.Component {
     const secondsAgo = new Date().getTime() / 1000 - timestamp;
 
     const minutesAgo = secondsAgo / 60;
+    if (minutesAgo == 0) {
+      return ` · now`;
+    }
     if (minutesAgo < 60) {
       return ` · ${Math.floor(minutesAgo)} minute${Math.floor(minutesAgo) > 1 ? 's' : ''} ago`;
     }
@@ -76,8 +79,13 @@ class PoticCard extends React.Component {
     }
 
     const daysAgo = hoursAgo / 24;
-    if (daysAgo < 30) {
+    if (daysAgo < 7) {
       return ` · ${Math.floor(daysAgo)} day${Math.floor(daysAgo) > 1 ? 's' : ''} ago`;
+    }
+
+    const weeksAgo = daysAgo / 7;
+    if (weeksAgo < 6) {
+      return ` · ${Math.floor(weeksAgo)} week${Math.floor(weeksAgo) > 1 ? 's' : ''} ago`;
     }
 
     const monthsAgo = daysAgo / 30;
