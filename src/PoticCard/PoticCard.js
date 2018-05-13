@@ -37,7 +37,7 @@ class PoticCard extends React.Component {
 
   render() {
     return (
-      <Card style={styles.card} >
+      <Card>
         <div style={styles.cardInner}>
 
           <CardMedia style={styles.media}>
