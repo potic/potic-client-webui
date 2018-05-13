@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import AlertContainer from 'react-alert';
 import PoticBar from '../PoticBar/PoticBar';
 import PoticGrid from '../PoticGrid/PoticGrid';
-import PoticTabBar from '../PoticTabBar/PoticTabBar';
 
 class PoticHome extends Component {
 
