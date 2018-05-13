@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import AlertContainer from 'react-alert';
 import PoticSection from '../PoticSection/PoticSection';
 import axios from 'axios';
@@ -12,7 +12,7 @@ class PoticGrid extends React.Component {
     theme: 'light',
     time: 5000,
     transition: 'scale'
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -29,11 +29,11 @@ class PoticGrid extends React.Component {
 
   componentDidMount() {
     this.fetchSections();
-    window.addEventListener("scroll", this.handleScroll);
+    window.addEventListener('scroll', this.handleScroll);
   }
 
   componentWillUnmount() {
-    window.removeEventListener("scroll", this.handleScroll);
+    window.removeEventListener('scroll', this.handleScroll);
   }
 
   render() {
@@ -48,7 +48,7 @@ class PoticGrid extends React.Component {
             markCardDisliked={(cardId) => this.markCardDisliked(cardId, sectionIndex) }
             section={this.state.sections[sectionIndex]}
             hiddenCards={this.state.hiddenCards}
-            focusCardId={ sectionIndex === this.state.focusSectionIndex ? this.state.focusCardId : ""} />
+            focusCardId={ sectionIndex === this.state.focusSectionIndex ? this.state.focusCardId : ''} />
          ))}
       </div>
     );
@@ -68,8 +68,8 @@ class PoticGrid extends React.Component {
         sections.forEach(section => { section['cards'] = []; });
 
         this.setState({
-          focusCardId: "",
-          focusSectionIndex: "",
+          focusCardId: '',
+          focusSectionIndex: '',
           sections: sections,
           hiddenCards: this.state.hiddenCards
         });
@@ -102,7 +102,7 @@ class PoticGrid extends React.Component {
         this.state.sections[sectionIndex]['cards'].push.apply(this.state.sections[sectionIndex]['cards'], cards);
 
         this.setState({
-          focusCardId: shouldFocus ? cards[cards.length - 1]['id'] : "",
+          focusCardId: shouldFocus ? cards[cards.length - 1]['id'] : '',
           focusSectionIndex: sectionIndex,
           sections: this.state.sections,
           hiddenCards: this.state.hiddenCards
@@ -124,10 +124,10 @@ class PoticGrid extends React.Component {
         url: `${config.services_articles}/user/me/article/${id}/like`,
         headers: { 'Authorization': `Bearer ${getAccessToken()}`},
         data: { skipIds: this.state.sections[sectionIndex]['cards'].map(card => card.id) }
-    }).then(res => {
+    }).then(_ => {
         this.setState({
-          focusCardId: "",
-          focusSectionIndex: "",
+          focusCardId: '',
+          focusSectionIndex: '',
           sections: this.state.sections,
           hiddenCards: this.state.hiddenCards.concat([id])});
         this.fetchCards(sectionIndex, 1, false);
@@ -145,10 +145,10 @@ class PoticGrid extends React.Component {
     const headers = { 'Authorization': `Bearer ${getAccessToken()}`}
 
     axios.post(`${config.services_articles}/user/me/article/${id}/dislike`, {}, { headers })
-      .then(res => {
+      .then(_ => {
         this.setState({
-          focusCardId: "",
-          focusSectionIndex: "",
+          focusCardId: '',
+          focusSectionIndex: '',
           sections: this.state.sections,
           hiddenCards: this.state.hiddenCards.concat([id])});
         this.fetchCards(sectionIndex, 1, false);

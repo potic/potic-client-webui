@@ -26,7 +26,7 @@ const styles = {
   },
   link: {
     textDecoration:'none'
-  },
+  }
 };
 
 class PoticCard extends React.Component {
@@ -67,7 +67,7 @@ class PoticCard extends React.Component {
 
     const minutesAgo = secondsAgo / 60;
     if (minutesAgo < 1) {
-      return ` · now`;
+      return ' · now';
     }
     if (minutesAgo < 60) {
       return ` · ${Math.floor(minutesAgo)} minute${Math.floor(minutesAgo) > 1 ? 's' : ''} ago`;

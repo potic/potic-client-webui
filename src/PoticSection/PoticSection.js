@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import Subheader from 'material-ui/Subheader';
 import FlatButton from 'material-ui/FlatButton';
@@ -8,25 +8,25 @@ const styles = {
   gridList: {
     display: 'flex',
     flexWrap: 'nowrap',
-    overflowX: 'auto',
+    overflowX: 'auto'
   },
   subheader: {
-    fontSize: '45px',
+    fontSize: '45px'
   },
   subheaderContainer: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between'
   },
   scrollContainer: {
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'row'
   },
   scrollLeft: {
-    fontSize: '45px',
+    fontSize: '45px'
   },
   scrollRight: {
-    fontSize: '45px',
+    fontSize: '45px'
   }
 };
 
@@ -36,7 +36,7 @@ class PoticSection extends React.Component {
   }
 
   componentDidUpdate() {
-    if (this.cardNode && this.props.focusCardId !== "") {
+    if (this.cardNode && this.props.focusCardId !== '') {
       var containerDOM = ReactDOM.findDOMNode(this.cardContainer);
       containerDOM.scrollLeft = 0;
       var rect = ReactDOM.findDOMNode(this.cardNode).getBoundingClientRect();
@@ -71,6 +71,6 @@ class PoticSection extends React.Component {
        </div>
     );
   }
-};
+}
 
 export default PoticSection;
