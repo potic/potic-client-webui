@@ -66,7 +66,7 @@ class PoticCard extends React.Component {
     const secondsAgo = new Date().getTime() / 1000 - timestamp;
 
     const minutesAgo = secondsAgo / 60;
-    if (minutesAgo == 0) {
+    if (minutesAgo < 1) {
       return ` · now`;
     }
     if (minutesAgo < 60) {
