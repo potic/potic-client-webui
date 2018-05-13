@@ -3,24 +3,6 @@ import { Card, CardActions, CardMedia, CardTitle } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 
 const styles = {
-  card: {
-    margin: 5,
-    width: 300,
-    minWidth: 300
-  },
-  cardInner: {
-    display: 'flex',
-    flexDirection: 'column',
-    height: 480,
-    justifyContent: 'flex-end',
-    overflowY: 'hidden'
-  },
-  media: {
-    flex: 1,
-    display: 'flex',
-    alignItems: 'center',
-    overflowY: 'hidden'
-  },
   title: {
     lineHeight: 1
   },
@@ -38,9 +20,9 @@ class PoticCard extends React.Component {
   render() {
     return (
       <Card>
-        <div style={styles.cardInner}>
+        <div>
 
-          <CardMedia style={styles.media}>
+          <CardMedia>
             <img src={this.props.post.image ? this.props.post.image.src : null} />
           </CardMedia>
 
