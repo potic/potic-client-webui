@@ -3,6 +3,24 @@ import AlertContainer from 'react-alert';
 import PoticSection from '../PoticSection/PoticSection';
 import axios from 'axios';
 import config from 'config';
+import {Tabs, Tab} from 'material-ui/Tabs';
+
+const styles = {
+  headline: {
+    fontSize: 24,
+    paddingTop: 16,
+    marginBottom: 12,
+    fontWeight: 400,
+    color: "black"
+
+  },
+  tab: {
+    backgroundColor: "white",
+  },
+  tabElement: {
+    color: "black"
+  }
+};
 
 class PoticGrid extends React.Component {
 
@@ -18,6 +36,7 @@ class PoticGrid extends React.Component {
     super(props);
 
     this.state = {
+      value: 0,
       sections: [],
       hiddenCards: []
     };
@@ -26,6 +45,12 @@ class PoticGrid extends React.Component {
     this.markCardLiked = this.markCardLiked.bind(this);
     this.markCardDisliked = this.markCardDisliked.bind(this);
   }
+
+  handleChange = (value) => {
+    this.setState({
+      value: value,
+    });
+  };
 
   componentDidMount() {
     this.fetchSections();
@@ -40,8 +65,16 @@ class PoticGrid extends React.Component {
     return (
       <div>
         <AlertContainer ref={(msg) => global.message = msg} {...this.alertOptions} />
+        <Tabs
+          value={this.state.value}
+          onChange={this.handleChange}
+          tabItemContainerStyle={styles.tab} >
 
         {Array(this.state.sections.length).fill().map((_, sectionIndex) => (
+          <Tab
+            style={styles.tabElement}
+            label={this.state.sections[sectionIndex]['title']}
+            value={sectionIndex} >
           <PoticSection
             fetchCards={(count, shouldFocus) => this.fetchCards(sectionIndex, count, shouldFocus) }
             markCardLiked={(cardId) => this.markCardLiked(cardId, sectionIndex) }
@@ -49,7 +82,9 @@ class PoticGrid extends React.Component {
             section={this.state.sections[sectionIndex]}
             hiddenCards={this.state.hiddenCards}
             focusCardId={ sectionIndex === this.state.focusSectionIndex ? this.state.focusCardId : ''} />
+          </Tab>
          ))}
+       </Tabs>
       </div>
     );
   }
