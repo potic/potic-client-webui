@@ -6,22 +6,32 @@ import FlatButton from 'material-ui/FlatButton';
 class PoticSection extends React.Component {
 
   constructor(props) {
-      super(props);
+    super(props);
+    this.handleScroll = this.handleScroll.bind(this);
+  }
+
+  componentDidMount() {
+    window.addEventListener('scroll', this.handleScroll);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.handleScroll);
+  }
+
+  handleScroll(event) {
+    var element = event.target.scrollingElement;
+    if (element.scrollHeight - element.scrollTop === element.clientHeight) {
+        console.log('Pagination: fetch more');
+        this.props.fetchCards(10, true);
+    }
   }
 
   render() {
     return (
       <div>
-        <div>
-          <div>
-            <FlatButton label="Load more..." onClick={() => {this.props.fetchCards(5, true)}}/>
-          </div>
-        </div>
-
-        <div>
           <StackGrid
             columnWidth={"20%"}
-          >
+            monitorImagesLoaded={true}>
             {this.props.section['cards']
               .filter((post) => {return this.props.hiddenCards.indexOf(post.id) < 0;})
               .map((post) => (<PoticCard
@@ -36,7 +46,6 @@ class PoticSection extends React.Component {
                 onMarkDisliked={this.props.markCardDisliked}
               />))}
           </StackGrid>
-        </div>
       </div>
     );
   }

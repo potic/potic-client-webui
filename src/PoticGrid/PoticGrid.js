@@ -54,11 +54,6 @@ class PoticGrid extends React.Component {
 
   componentDidMount() {
     this.fetchSections();
-    window.addEventListener('scroll', this.handleScroll);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('scroll', this.handleScroll);
   }
 
   render() {
@@ -111,7 +106,7 @@ class PoticGrid extends React.Component {
 
         Array(this.state.sections.length).fill().map((_, sectionIndex) => {
             this.props.log.send('DEBUG', 'me.potic.web.PoticGrid', `fetching head of section ${this.state.sections[sectionIndex].id}`);
-            this.fetchCards(sectionIndex, 5, false);
+            this.fetchCards(sectionIndex, 20, false);
         });
       })
       .catch(function (error) {
